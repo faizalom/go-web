@@ -1,17 +1,38 @@
 import { useEffect } from 'react';
 import { useNavigate, useMatch } from 'react-router';
 import FaCard from '../Fa/FaCard';
-import FaInput from '../FaInput/FaInput';
+import FaInput, { FaInputAjax } from '../FaInput/FaInput';
 import useHttp from '../hooks/use-http';
 import useInput from '../hooks/use-input';
+import useInputAjax from '../hooks/use-inputAjax';
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import FaText from '@/FaInput/FaText';
+import FaUserImg from '@/FaInput/FaUserImg';
+import FaRadio from '@/FaInput/FaRadio';
+import FaSelect from '@/FaInput/FaSelect';
+import FaSwitch from '@/FaInput/FaSwitch';
+import classes from './Staff.module.css';
+
+function getBloodGroup() {
+    var bloodGroup = []
+    bloodGroup['A+'] = 'A+';
+    bloodGroup['A-'] = 'A-';
+    bloodGroup['B+'] = 'B+';
+    bloodGroup['B-'] = 'B-';
+    bloodGroup['0+'] = '0+';
+    bloodGroup['0-'] = '0-';
+    bloodGroup['AB+'] = 'AB+';
+    bloodGroup['AB-'] = 'AB-';
+    return bloodGroup;
+}
 
 const StaffAdd = (props) => {
 
     const { isLoading, sendRequest } = useHttp();
-    const match = useMatch("u/staff/edit/:id")
+    const { isLoading: ajaxLoading, sendRequest: ajaxSendRequest } = useHttp();
 
+    const match = useMatch("u/staff/edit/:id")
     const history = useNavigate()
     //let toastId = 0;
 
@@ -21,13 +42,21 @@ const StaffAdd = (props) => {
     inputs['firstName'] = useInput((value) => value.trim() !== '');
     inputs['lastName'] = useInput(() => true);
     inputs['email'] = useInput((value) => value.includes('@'));
-    inputs['username'] = useInput((value) => value.trim() !== '');
+    inputs['allow_login'] = useInput(() => true);
+    inputs['username'] = useInputAjax();
+    inputs['password'] = useInput((value) => {
+        return value.trim() !== '' || inputs['allow_login'].value !== 'yes'
+    });
     inputs['mobile'] = useInput((value) => value.trim() !== '');
     inputs['address_1'] = useInput((value) => value.trim() !== '');
     inputs['address_2'] = useInput(() => true);
     inputs['city'] = useInput((value) => value.trim() !== '');
     inputs['postal_code'] = useInput((value) => value.trim() !== '');
     inputs['dob'] = useInput((value) => value.trim() !== '');
+    inputs['comments'] = useInput(() => true);
+    inputs['blood_group'] = useInput((value) => value.trim() !== '');
+    inputs['gender'] = useInput((value) => value.trim() !== '');
+    inputs['profile_photo'] = useInput(() => true);
 
     let minDob = new Date();
     minDob.setFullYear(minDob.getFullYear() - 18);
@@ -39,6 +68,19 @@ const StaffAdd = (props) => {
             formIsValid = false;
         }
     }
+
+    const allowLogiChangeHandler = (event) => {
+        if (event.target.checked) {
+            inputs['allow_login'].setValue(event.target.value)
+            inputs['username'].setIsValid(false)
+            inputs['username'].setMessage('')
+        } else {
+            inputs['username'].setValue('')
+            inputs['username'].setIsValid(true)
+            inputs['password'].setValue('')
+            inputs['allow_login'].setValue('')
+        }
+    };
 
     useEffect(() => {
         const transformStaff = (staffData) => {
@@ -88,13 +130,18 @@ const StaffAdd = (props) => {
         }
     };
 
-    let title="Add Staff"
+    let title = "Add Staff"
     if (match) {
         title = "Edit Staff"
     }
 
     return (
         <FaCard color="info" title={title}>
+            {isLoading &&
+                <div className={classes.loaderRoot + " d-flex justify-content-center align-self-center"} >
+                    <div className={classes.loader + " align-self-center"}></div>
+                </div>
+            }
             <form className="form-horizontal" onSubmit={formSubmissionHandler}>
                 <div className="card-body">
                     <div className="row">
@@ -110,14 +157,14 @@ const StaffAdd = (props) => {
                                 label="First Name"
                                 id='firstName'
                                 {...inputs['firstName']}
-                                errorMessage={"Name must not be empty."}
+                                errorMessage={"First name must not be empty."}
                                 required
                             />
                             <FaInput type='text'
                                 label="Last Name"
                                 id='lastName'
                                 {...inputs['lastName']}
-                                errorMessage={lastNameErrorMessage}
+                                errorMessage={"Last name must not be empty."}
                                 hasError={inputs['lastName'].hasError}
                             />
                             <FaInput type='text'
@@ -127,15 +174,6 @@ const StaffAdd = (props) => {
                                 errorMessage={"Please enter a valid email."}
                                 required
                             />
-                            <FaInput type='text'
-                                label="Login ID"
-                                id='username'
-                                {...inputs['username']}
-                                errorMessage={"Please enter a valid Login ID."}
-                                required
-                            />
-                        </div>
-                        <div className="col-md-6 pl-4">
                             <FaInput type='text'
                                 label="Mobile"
                                 id='mobile'
@@ -171,6 +209,23 @@ const StaffAdd = (props) => {
                                 errorMessage={"Postal Code must not be empty."}
                                 required
                             />
+                        </div>
+                        <div className="col-md-6 pl-4">
+                            <FaUserImg {...inputs['profile_photo']} />
+                            <FaRadio options={{ "Male": "Male", "Female": "Female" }}
+                                label="Gender"
+                                id='gender'
+                                {...inputs['gender']}
+                                errorMessage={"Please select gender."}
+                                required
+                            />
+                            <FaSelect options={getBloodGroup()}
+                                label="Blood Group"
+                                id='blood_group'
+                                {...inputs['blood_group']}
+                                errorMessage={"Please choose blood group."}
+                                required
+                            />
                             <FaInput type='date'
                                 label="Date of birth"
                                 id='dob'
@@ -178,6 +233,35 @@ const StaffAdd = (props) => {
                                 errorMessage={"Date of birth must not be empty."}
                                 required
                                 max={minDob}
+                            />
+                            <FaSwitch
+                                label="Allow Login"
+                                id='allow_login'
+                                {...inputs['allow_login']}
+                                value="yes"
+                                valueChangeHandler={allowLogiChangeHandler}
+                                checked={inputs['allow_login'].value === 'yes'}
+                            />
+                            {inputs['allow_login'].value &&
+                                (<FaInputAjax type='text'
+                                    label="Login ID"
+                                    id='username'
+                                    {...inputs['username']}
+                                    errorMessage={inputs['username'].message}
+                                    required
+                                />)}
+                            {inputs['allow_login'].value &&
+                                (<FaInput type='password'
+                                    label="Password"
+                                    id='password'
+                                    {...inputs['password']}
+                                    errorMessage={"Please enter a password."}
+                                    required
+                                />)}
+                            <FaText type='text'
+                                label="Comments"
+                                id='comments'
+                                {...inputs['comments']}
                             />
                         </div>
                     </div>
@@ -188,7 +272,6 @@ const StaffAdd = (props) => {
                 </div>
             </form>
         </FaCard>
-
     );
 }
 
