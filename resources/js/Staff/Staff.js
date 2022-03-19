@@ -19,7 +19,7 @@ function Staff(props) {
             setUsers(data)
         };
 
-        sendRequest({ "url": "https://mysapp.firebaseio.com/users.json" }, transformStaff)
+        sendRequest({ "url": "/api/staff" }, transformStaff)
     }, [sendRequest, staffDeleteId])
 
     const deleteStaff = (key) => {
@@ -74,7 +74,7 @@ function Staff(props) {
                     </thead>
                     <tbody>
                         {Object.keys(users).map((key) => (
-                            <tr key={key}>
+                            <tr key={users[key].id}>
                                 <th></th>
                                 <td>{users[key].memberCode}</td>
                                 <td>{users[key].firstName}</td>
@@ -83,8 +83,8 @@ function Staff(props) {
                                 <td>{users[key].username}</td>
                                 <td>{users[key].city}</td>
                                 <td className="text-right">
-                                    <Link to={"/u/staff/edit/" + key} className="mx-3"><i className="fas fa-edit fa-lg"></i></Link>
-                                    <button className="btn btn-link p-0" onClick={(e) => deleteStaff(key)}><i className="fas fa-trash fa-lg"></i></button>
+                                    <Link to={"/u/staff/edit/" + users[key].id} className="mx-3"><i className="fas fa-edit fa-lg"></i></Link>
+                                    <button className="btn btn-link p-0" onClick={(e) => deleteStaff(users[key].id)}><i className="fas fa-trash fa-lg"></i></button>
                                 </td>
                             </tr>
                         ))}

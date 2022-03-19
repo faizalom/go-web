@@ -3,21 +3,17 @@
 package main
 
 import (
-	"fmt"
 	"log"
 	"net/http"
 	"os"
 	"theme"
 
 	"github.com/faizalom/go-web/controllers"
+	"github.com/faizalom/go-web/controllers/apis"
 	"github.com/faizalom/go-web/middleware"
 
 	"github.com/julienschmidt/httprouter"
 )
-
-func Hello(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
-	fmt.Fprintf(w, "hello, %s!\n", ps.ByName("name"))
-}
 
 func main() {
 	logFile, err := os.OpenFile("error.log", os.O_RDWR|os.O_CREATE|os.O_APPEND, 0666)
@@ -40,7 +36,8 @@ func main() {
 	//router.GET("/u/*filepath", middleware.AuthMiddleware(controllers.CoreUI))
 	router.GET("/u/*filepath", middleware.AuthMiddleware(controllers.CoreUI))
 
-	router.GET("/hello/:name", Hello)
+	router.GET("/api/staff", middleware.AuthMiddleware(apis.GetStaff))
+	router.GET("/api/staff/:id", middleware.AuthMiddleware(apis.GetStaffByID))
 
 	log.Fatal(http.ListenAndServe(":8181", router))
 }

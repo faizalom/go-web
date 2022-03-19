@@ -31,10 +31,9 @@ const StaffAdd = (props) => {
 
     let minDob = new Date();
     minDob.setFullYear(minDob.getFullYear() - 18);
-    minDob = minDob.getFullYear() + "-" + (minDob.getMonth() + 1) + "-" + minDob.getDate();
+    minDob = minDob.getFullYear() + "-" + ('0' + (minDob.getMonth() + 1)).slice(-2) + "-" + ('0' + minDob.getDate()).slice(-2);
 
     let formIsValid = true;
-
     for (let i in inputs) {
         if (!inputs[i].isValid) {
             formIsValid = false;
@@ -44,19 +43,20 @@ const StaffAdd = (props) => {
     useEffect(() => {
         const transformStaff = (staffData) => {
             for (let i in staffData) {
+                if (i == 'id') continue
                 inputs[i].setValue(staffData[i])
             }
         };
 
         if (match) {
-            sendRequest({ "url": `https://mysapp.firebaseio.com/users/${match.params.id}.json` }, transformStaff)
+            sendRequest({ "url": `/api/staff/${match.params.id}` }, transformStaff)
         }
     }, [match, sendRequest])
 
     const goToSTaff = (message, data) => {
         //toast.update(toastId, { isLoading: false });
         toast.success(message, { theme: "colored" });
-        history.push("/staff")
+        history("/u/staff")
     }
 
     const formSubmissionHandler = (event) => {
@@ -88,8 +88,13 @@ const StaffAdd = (props) => {
         }
     };
 
+    let title="Add Staff"
+    if (match) {
+        title = "Edit Staff"
+    }
+
     return (
-        <FaCard color="info" title="Add Staff">
+        <FaCard color="info" title={title}>
             <form className="form-horizontal" onSubmit={formSubmissionHandler}>
                 <div className="card-body">
                     <div className="row">
@@ -178,8 +183,8 @@ const StaffAdd = (props) => {
                     </div>
                 </div>
                 <div className="card-footer">
-                    <button disabled={!formIsValid || isLoading} className="btn btn-info float-right">{isLoading ? 'Saving' : 'Save'}</button>
-                    <button type="button" onClick={() => history.goBack()} className="btn btn-default"><i className="fas fa-long-arrow-alt-left"></i> Back</button>
+                    <button disabled={!formIsValid || isLoading} className="btn btn-primary float-end">{isLoading ? 'Processing...' : 'Save'}</button>
+                    <button type="button" onClick={() => history(-1)} className="btn btn-primary"><i className="fas fa-long-arrow-alt-left"></i> Back</button>
                 </div>
             </form>
         </FaCard>
