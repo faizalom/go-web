@@ -3,25 +3,23 @@
 {{define "content"}}
 <div class="container">
     <div class="row justify-content-center">
-        <div class="col-lg-8">
+        <div class="col-lg-6">
             <div class="card-group d-block d-md-flex row">
                 <div class="card col-md-7 p-4 mb-0">
                     <form class="card-body" method="post">
                         <h1>Login</h1>
                         <p class="text-medium-emphasis">Sign In to your account</p>
-                        <div class="input-group mb-3"><span class="input-group-text">
-                                <svg class="icon">
-                                    <use xlink:href="static/vendors/@coreui/icons/sprites/free.svg#cil-user"></use>
-                                </svg></span>
-                            <input class="form-control" type="text" placeholder="Username" name="username">
+                        <div class="form-floating mb-3">
+                            <input class="form-control" type="text" placeholder="Username" name="username" required>
+                            <label for="username">Username<span class="text-danger">*</span></label>
                         </div>
-                        <div class="input-group mb-4"><span class="input-group-text">
-                                <svg class="icon">
-                                    <use xlink:href="static/vendors/@coreui/icons/sprites/free.svg#cil-lock-locked">
-                                    </use>
-                                </svg></span>
-                            <input class="form-control" type="password" placeholder="Password" name="password">
+                        <div class="form-floating mb-3">
+                            <input class="form-control" type="password" placeholder="Password" name="password" required>
+                            <label for="username">Password<span class="text-danger">*</span></label>
                         </div>
+                        {{ range $key, $value := .Data.error }}
+                        <div class="alert alert-danger" role="alert">{{ $value }}</div>
+                        {{ end }}
                         <div class="row">
                             <div class="col-6">
                                 <button class="btn btn-primary px-4">Login</button>
@@ -32,7 +30,7 @@
                         </div>
                     </form>
                 </div>
-                <div class="card col-md-5 text-white bg-primary py-5">
+                <!-- <div class="card col-md-5 text-white signup-background py-5">
                     <div class="card-body text-center">
                         <div>
                             <h2>Sign up</h2>
@@ -42,7 +40,7 @@
                             <button class="btn btn-lg btn-outline-light mt-3" type="button">Register Now!</button>
                         </div>
                     </div>
-                </div>
+                </div> -->
             </div>
         </div>
     </div>

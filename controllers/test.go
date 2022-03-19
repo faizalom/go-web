@@ -1,6 +1,8 @@
 package controllers
 
 import (
+	"encoding/json"
+	"log"
 	"net/http"
 
 	"github.com/faizalom/go-web/lib"
@@ -8,5 +10,22 @@ import (
 )
 
 func CoreUI(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
-	lib.Theme.ExeTemp(w, r, "views/dashboard.html", nil)
+	auth, _ := lib.Auth(r)
+	user, _ := lib.MDB.AuthUser(auth)
+
+	data := make(map[string]interface{})
+	data["user"] = user
+
+	jsonB, err := json.Marshal(data)
+	if err != nil {
+		log.Println(err)
+	}
+	jsonStr := string(jsonB)
+
+	resp := struct {
+		Json string
+	}{
+		jsonStr,
+	}
+	lib.Theme.ExeTemp(w, r, "views/react.html", resp)
 }

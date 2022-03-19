@@ -1,24 +1,22 @@
-import logo from './logo.svg';
 import './App.css';
+import CoreUI from './CoreUI/CoreUI';
+import { Routes, Route } from "react-router-dom";
+import Staff from './Staff/Staff';
+import StaffAdd from './Staff/StaffAdd';
+import Dashboard from './Dashboard/Dashboard';
+import { ToastContainer } from 'react-toastify';
 
 function App() {
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/Index.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <CoreUI>
+      <ToastContainer />
+      <Routes>
+        <Route path="/u" exact element={<Dashboard />} />
+        <Route path="/u/staff" exact element={<Staff />} />
+        <Route path="/u/staff/add" exact element={<StaffAdd />} />
+        <Route path="/u/staff/edit/:id" exact element={<StaffAdd />} />
+      </Routes>
+    </CoreUI>
   );
 }
 

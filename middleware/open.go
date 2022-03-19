@@ -25,8 +25,8 @@ func Logger(f func(http.ResponseWriter, *http.Request, httprouter.Params)) func(
 func AuthMiddleware(f func(http.ResponseWriter, *http.Request, httprouter.Params)) func(http.ResponseWriter, *http.Request, httprouter.Params) {
 	return func(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
 		defer log.Println(r.RemoteAddr, r.RequestURI)
-		session, _ := lib.Auth(r)
-		if auth, ok := session.Values["authenticated"].(bool); !ok || !auth {
+		auth, _ := lib.Auth(r)
+		if auth, ok := auth.Values["authenticated"].(bool); !ok || !auth {
 			redirect(w, r, ps)
 		} else {
 			f(w, r, ps) // original function call
