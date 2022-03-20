@@ -20,9 +20,6 @@
     outline-style: solid;
     outline-width: thick;
 }
-.table td {
-    vertical-align: middle;
-}
 
 @keyframes spin {
     0% { transform: rotate(0deg); }

@@ -34,9 +34,7 @@ const StaffAdd = (props) => {
 
     const match = useMatch("u/staff/edit/:id")
     const history = useNavigate()
-    //let toastId = 0;
 
-    let lastNameErrorMessage = "Name must not be empty."
     let inputs = []
     inputs['memberCode'] = useInput((value) => value.trim() !== '');
     inputs['firstName'] = useInput((value) => value.trim() !== '');
@@ -83,6 +81,44 @@ const StaffAdd = (props) => {
     };
 
     useEffect(() => {
+        inputs['username'].setValue(inputs['username'].value.toLowerCase());
+        const identifier = setTimeout(() => {
+            inputs['username'].setIsValid(false)
+            if (inputs['allow_login'].value != 'yes') {
+                inputs['username'].setIsValid(true)
+                return;
+            }
+            if (inputs['username'].value.length < 5) {
+                inputs['username'].setLoading(false);
+                inputs['username'].setIsValid(false);
+                inputs['username'].setMessage("Login ID atleast 5 character");
+            } else {
+                inputs['username'].setLoading(true);
+                ajaxSendRequest({
+                    "url": "/api/staff-available",
+                    method: "POST",
+                    body: {'username': inputs['username'].value, 'id': match.params.id},
+                    headers: {
+                        "Content-Type": "application/json"
+                    }
+                }, (res) => {
+                    inputs['username'].setLoading(false)
+                    if (res.is_available) {
+                        inputs['username'].setMessage(inputs['username'].value + " is available");
+                        inputs['username'].setIsValid(true);
+                    } else {
+                        inputs['username'].setMessage(inputs['username'].value + " is already taken");
+                        inputs['username'].setIsValid(false);
+                    }
+                })
+            }
+        }, 500);
+        return () => {
+          clearTimeout(identifier);
+        };
+    }, [inputs['username'].value]);
+
+    useEffect(() => {
         const transformStaff = (staffData) => {
             for (let i in staffData) {
                 if (i == 'id') continue
@@ -111,8 +147,8 @@ const StaffAdd = (props) => {
         }
         if (match) {
             sendRequest({
-                "url": `https://mysapp.firebaseio.com/users/${match.params.id}.json`,
-                method: "PATCH",
+                "url": `/api/staff/${match.params.id}`,
+                method: "PUT",
                 body: staff,
                 headers: {
                     "Content-Type": "application/json"

@@ -8,24 +8,20 @@ const Header = (props) => {
         <header className="header header-sticky mb-4">
             <div className="container-fluid">
                 <button className="header-toggler px-md-0 me-md-3" type="button" onClick={Sidebar}>
-                    <svg className="icon icon-lg">
-                        <use xlinkHref="static/vendors/@coreui/icons/svg/free.svg#cil-menu" />
-                    </svg>
-                </button><a className="header-brand d-md-none" href="#">
+                    <i className="fas fa-bars" aria-hidden="true"></i>
+                </button>
+                <a className="header-brand d-md-none" href="#">
                     <svg width={118} height={46} alt="CoreUI Logo">
                         <use xlinkHref="static/assets/brand/coreui.svg#full" />
-                    </svg></a>
+                    </svg>
+                </a>
                 <ul className="header-nav d-none d-md-flex">
                     <li className="nav-item"><a className="nav-link" href="#">Dashboard</a></li>
                     <li className="nav-item"><a className="nav-link" href="#">Users</a></li>
                     <li className="nav-item"><a className="nav-link" href="#">Settings</a></li>
                 </ul>
                 <ul className="header-nav ms-auto">
-                    <li className="nav-item">
-                        <a className="nav-link" href="#">
-                            <svg className="icon icon-lg"><use xlinkHref="static/vendors/@coreui/icons/svg/free.svg#cil-envelope-open" /></svg>
-                        </a>
-                    </li>
+                    <li className="nav-item"><i className="fas fa-envelope-open"></i></li>
                 </ul>
                 <ul className="header-nav ms-3">
                     <li className="nav-item dropdown">
@@ -39,20 +35,14 @@ const Header = (props) => {
                                 <div className="fw-semibold">Settings</div>
                             </div>
                             <a className="dropdown-item" href="#">
-                                <svg className="icon me-2">
-                                    <use xlinkHref="static/vendors/@coreui/icons/svg/free.svg#cil-user" />
-                                </svg> Profile
+                                <i className="fas fa-user me-2"></i> Profile
                             </a>
                             <a className="dropdown-item" href="#">
-                                <svg className="icon me-2">
-                                    <use xlinkHref="static/vendors/@coreui/icons/svg/free.svg#cil-settings" />
-                                </svg> Settings
+                                <i className="fas fa-cog me-2"></i> Settings
                             </a>
                             <div className="dropdown-divider" />
                             <a className="dropdown-item" href="/logout">
-                                <svg className="icon me-2">
-                                    <use xlinkHref="static/vendors/@coreui/icons/svg/free.svg#cil-account-logout" />
-                                </svg> Logout
+                                <i className="fas fa-sign-out-alt me-2"></i> Logout
                             </a>
                         </div>
                     </li>

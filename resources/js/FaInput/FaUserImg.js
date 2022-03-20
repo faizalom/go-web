@@ -2,12 +2,14 @@ import { useState, useCallback } from 'react';
 import { Button, ButtonGroup, Modal } from "react-bootstrap";
 import classes from './FaUserImg.module.css';
 import Cropper from 'react-easy-crop';
-import getCroppedImg from './cropImage'
+import getCroppedImg from './cropImage';
 
 const FaUserImg = (props) => {
     const [show, setShow] = useState(false);
-    const [profilePhoto, setProfilePhoto] = useState("/assets/img/profilePhoto.png");
-    const [selectedImage, setSelectedImage] = useState('https://img.huffingtonpost.com/asset/5ab4d4ac2000007d06eb2c56.jpeg?cache=sih0jwle4e&ops=1910_1000');
+    if (props.value === '') {
+        props.setValue("/images/profilePhoto.png")
+    }
+    const [selectedImage, setSelectedImage] = useState(props.value);
     const handleClose = () => setShow(false);
     const handleShow = () => setShow(true);
 
@@ -27,7 +29,7 @@ const FaUserImg = (props) => {
             croppedAreaPixels,
             rotation
           )
-          setProfilePhoto(croppedImage)
+          props.setValue(croppedImage)
           handleClose()
         } catch (e) {
           console.error(e)
@@ -51,9 +53,9 @@ const FaUserImg = (props) => {
         <>
             <div className="mb-3 row">
                 <label htmlFor={props.id} className="col-sm-3 col-form-label">{props.label}{props.required && <span className="text-danger">*</span>}</label>
-                <div className="col-sm-9">
+                <div className="col-sm-9 d-flex justify-content-center">
                     <div className={classes.userImage} onClick={handleShow}>
-                        <img className="img-thumbnail rounded" id="user-photo-preview" src={profilePhoto} alt="User profile picture" />
+                        <img className="img-thumbnail rounded" id="user-photo-preview" src={props.value} alt="User profile picture" />
                         {props.hasError && (
                             <div className="invalid-feedback">{props.errorMessage}</div>
                         )}
@@ -63,16 +65,16 @@ const FaUserImg = (props) => {
             </div>
             <Modal show={show} onHide={handleClose}>
                 <Modal.Body className={classes.cropContainer}>
-                            <Cropper
-                                image={selectedImage}
-                                crop={crop}
-                                zoom={zoom}
-                                objectFit="contain"
-                                aspect={1 / 1}
-                                onCropChange={setCrop}
-                                onCropComplete={onCropComplete}
-                                onZoomChange={setZoom}
-                            />
+                    <Cropper
+                        image={selectedImage}
+                        crop={crop}
+                        zoom={zoom}
+                        objectFit="contain"
+                        aspect={1 / 1}
+                        onCropChange={setCrop}
+                        onCropComplete={onCropComplete}
+                        onZoomChange={setZoom}
+                    />
                 </Modal.Body>
                 <Modal.Footer className="p-1">
                     <Button className="me-auto" variant="secondary" onClick={handleClose} size="sm" >Close</Button>

@@ -38,6 +38,8 @@ func main() {
 
 	router.GET("/api/staff", middleware.AuthMiddleware(apis.GetStaff))
 	router.GET("/api/staff/:id", middleware.AuthMiddleware(apis.GetStaffByID))
+	router.POST("/api/staff-available", middleware.AuthMiddleware(apis.CheckStaffAvailable))
+	router.PUT("/api/staff/:id", middleware.AuthMiddleware(apis.UpdateStaffByID))
 
 	log.Fatal(http.ListenAndServe(":8181", router))
 }

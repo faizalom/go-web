@@ -62,7 +62,11 @@ function Staff(props) {
                 <table className="table table-hover text-nowrap table-striped m-0">
                     <thead>
                         <tr>
-                            <th></th>
+                            <th className="text-center">
+                                <svg className="icon">
+                                    <use xlinkHref="vendors/@coreui/icons/svg/free.svg#cil-people" />
+                                </svg>
+                            </th>
                             <th>Staff Code</th>
                             <th>First Name</th>
                             <th>Last Name</th>
@@ -75,9 +79,14 @@ function Staff(props) {
                     <tbody>
                         {Object.keys(users).map((key) => (
                             <tr key={users[key].id}>
-                                <th></th>
+                                <td className="text-center">
+                                    <div className="avatar avatar-md"><img className="avatar-img" src={users[key].profile_photo} /></div>
+                                </td>
                                 <td>{users[key].memberCode}</td>
-                                <td>{users[key].firstName}</td>
+                                <td>
+                                    <div>{users[key].firstName}</div>
+                                    {/* <div className="small text-medium-emphasis"><span>{users[key].memberCode}</span></div> */}
+                                </td>
                                 <td>{users[key].lastName}</td>
                                 <td>{users[key].email}</td>
                                 <td>{users[key].username}</td>

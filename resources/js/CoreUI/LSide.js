@@ -12,7 +12,10 @@ const LSide = (props) => {
                 </svg>
             </div>
             <ul className="sidebar-nav" data-coreui="navigation" data-simplebar>
-                <li className="nav-title">{DATA.user.firstName} {DATA.user.lastName}</li>
+                <li className="nav-title text-center mt-0">
+                    <img src={DATA.user.profile_photo} alt="{DATA.user.firstName}" className="img-thumbnail" style={{"borderRadius":"50%", "width":"100px", "backgroundColor": "#303c54", "border":"none"}} />
+                    <div className="mt-1">{DATA.user.firstName} {DATA.user.lastName}</div>
+                </li>
                 {/* <li className="nav-item px-3 d-narrow-none">
                     <div className="text-uppercase mb-1"><small><b>CPU Usage</b></small></div>
                     <div className="progress progress-thin">
