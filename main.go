@@ -37,6 +37,7 @@ func main() {
 	router.GET("/u/*filepath", middleware.AuthMiddleware(controllers.CoreUI))
 
 	router.GET("/api/staff", middleware.AuthMiddleware(apis.GetStaff))
+	router.POST("/api/staff", middleware.AuthMiddleware(apis.StaffStore))
 	router.GET("/api/staff/:id", middleware.AuthMiddleware(apis.GetStaffByID))
 	router.POST("/api/staff-available", middleware.AuthMiddleware(apis.CheckStaffAvailable))
 	router.PUT("/api/staff/:id", middleware.AuthMiddleware(apis.UpdateStaffByID))

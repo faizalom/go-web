@@ -94,10 +94,14 @@ const StaffAdd = (props) => {
                 inputs['username'].setMessage("Login ID atleast 5 character");
             } else {
                 inputs['username'].setLoading(true);
+                let id = 0;
+                if (match) {
+                    let id = match.params.id;
+                }
                 ajaxSendRequest({
                     "url": "/api/staff-available",
                     method: "POST",
-                    body: {'username': inputs['username'].value, 'id': match.params.id},
+                    body: {'username': inputs['username'].value, 'id': id},
                     headers: {
                         "Content-Type": "application/json"
                     }
@@ -156,7 +160,7 @@ const StaffAdd = (props) => {
             }, goToSTaff.bind(null, "Staff updated successfully"))
         } else {
             sendRequest({
-                "url": "https://mysapp.firebaseio.com/users.json",
+                "url": "/api/staff",
                 method: "POST",
                 body: staff,
                 headers: {

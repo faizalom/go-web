@@ -118,3 +118,30 @@ func UpdateStaffByID(w http.ResponseWriter, r *http.Request, p httprouter.Params
 		log.Println(err)
 	}
 }
+
+func StaffStore(w http.ResponseWriter, r *http.Request, p httprouter.Params) {
+
+	decoder := json.NewDecoder(r.Body)
+	user := model.User{}
+	err := decoder.Decode(&user)
+	if err != nil {
+		log.Println(err)
+	}
+
+	_, err = lib.MDB.UserModel().InsertOne(context.Background(), user)
+	if err != nil {
+		log.Println(err)
+	}
+
+	res := struct {
+		Message string `json:"message"`
+	}{
+		"User added successfully",
+	}
+
+	w.Header().Set("Content-Type", "application/json")
+	err = json.NewEncoder(w).Encode(res)
+	if err != nil {
+		log.Println(err)
+	}
+}
