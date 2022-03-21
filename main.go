@@ -42,5 +42,7 @@ func main() {
 	router.POST("/api/staff-available", middleware.AuthMiddleware(apis.CheckStaffAvailable))
 	router.PUT("/api/staff/:id", middleware.AuthMiddleware(apis.UpdateStaffByID))
 
+	router.GET("/xv", middleware.AuthMiddleware(controllers.XVIndex))
+
 	log.Fatal(http.ListenAndServe(":8181", router))
 }

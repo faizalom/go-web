@@ -5,6 +5,7 @@ import Staff from './Staff/Staff';
 import StaffAdd from './Staff/StaffAdd';
 import Dashboard from './Dashboard/Dashboard';
 import { ToastContainer } from 'react-toastify';
+import XV from './xv/XV';
 
 function App() {
   return (
@@ -15,6 +16,7 @@ function App() {
         <Route path="/u/staff" exact element={<Staff />} />
         <Route path="/u/staff/add" exact element={<StaffAdd />} />
         <Route path="/u/staff/edit/:id" exact element={<StaffAdd />} />
+        <Route path="/u/xv" exact element={<XV />} />
       </Routes>
     </CoreUI>
   );
