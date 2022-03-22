@@ -1,11 +1,11 @@
 import { useState, useRef, useCallback, useEffect } from "react";
-import { Link } from "react-router-dom";
 import useHttp from "../hooks/use-http.js";
 import 'react-toastify/dist/ReactToastify.css';
 
 function XV(props) {
-    const [pageNum, setPageNum] = useState(1);
-    const [hasMore, sethasMore] = useState(1);
+    const [sort, setSort] = useState(1);
+    const [pageNum, setPageNum] = useState(0);
+    const [hasMore, sethasMore] = useState(0);
     const [sxv, setSxv] = useState([]);
     const { isLoading, sendRequest } = useHttp();
 
@@ -24,41 +24,39 @@ function XV(props) {
     );
 
     useEffect(() => {
+        if (pageNum == 0) {
+            setSxv([])
+        }
+
         const transformStaff = (data) => {
             setSxv((prev) => {
                 return [...new Set([...prev, ...data])];
             });
-            sethasMore(parseInt(Math.random() * 100))
+            sethasMore(pageNum + 1)
         };
-
-        let page = parseInt(Math.random() * 100);
-        sendRequest({ "url": "/xv?limit=50&sort=-1&page=" + page }, transformStaff)
+        sendRequest({ "url": "/xv?limit=50&sort=" + sort + "&page=" + pageNum }, transformStaff)
     }, [sendRequest, pageNum])
 
-    const refreshHandler = () => {
-        const d = new Date();
-        setstaffDeleteId(d.getTime());
-    }
-
-    // const handleChange = (e) => {
-    //     setQuery(e.target.value);
-    //     setPageNum(1);
-    // };
+    const handleSort = (e) => {
+        setPageNum(0);
+        setSort((prev) => {
+            return prev == 1 ? -1 : 1
+        });
+    };
 
     return (
         <div className="card mb-4">
-            <div className="card-header">Staff</div>
             <div className="card-header">
-                <Link to="/u/staff/add" className="btn btn-primary float-end"><i className="fas fa-plus" /> Add Staff</Link>
-                <div className="input-group" style={{ width: "350px" }}>
-                    <button className="btn btn-primary" tabIndex={0} type="button" onClick={refreshHandler}>
-                        <i className="fas fa-sync" /> Refresh
+                <div className="btn-group btn-group-sm" role="group" aria-label="Basic mixed styles example">
+                    <button className="btn btn-danger" type="button">Left</button>
+                    <button className="btn btn-warning" type="button">Middle</button>
+                    <button className="btn btn-success" type="button" onClick={handleSort}>
+                        {sort == 1 ? <i className="fas fa-sort-amount-down"></i> : <i className="fas fa-sort-amount-up"></i> }
                     </button>
                 </div>
             </div>
             <div className="card-body table-responsive p-0 position-relative">
                 <div className="card-group">
-
                     {Object.keys(sxv).map((key) => {
                         if (sxv.length === parseInt(key) + 1) {
                             return (<div className="card" style={{ "flex": "unset", "width": "200px" }} key={sxv[key].video_id} ref={lastXVElementRef}>
