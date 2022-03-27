@@ -43,6 +43,7 @@ func main() {
 	router.PUT("/api/staff/:id", middleware.AuthMiddleware(apis.UpdateStaffByID))
 
 	router.GET("/xv", middleware.AuthMiddleware(controllers.XVIndex))
+	router.GET("/xv/:videoId", middleware.AuthMiddleware(controllers.XVidGetVideo))
 
 	log.Fatal(http.ListenAndServe(":8181", router))
 }

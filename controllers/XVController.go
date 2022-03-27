@@ -4,7 +4,6 @@ import (
 	"context"
 	"encoding/json"
 	"encoding/xml"
-	"fmt"
 	"helper/model"
 	"io/ioutil"
 	"log"
@@ -135,7 +134,8 @@ func XVIndex(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
 }
 
 func GrabVideo(videoID string, modelXvid *model.XVid) {
-	resp, err := http.Get("https://www.xvideos2.com/video" + videoID + "/")
+
+	resp, err := http.Get(lib.XVURL + "/video" + videoID + "/vid")
 	if err != nil {
 		log.Println(err)
 	}
@@ -349,15 +349,18 @@ func GrabVideo(videoID string, modelXvid *model.XVid) {
 }
 
 func XVidGetVideo(w http.ResponseWriter, req *http.Request, ps httprouter.Params) {
-	videoID := ps.ByName("videoid")
-	id, _ := strconv.Atoi(videoID)
+	videoID := ps.ByName("videoId")
+	id, err := strconv.Atoi(videoID)
+	if err != nil {
+		log.Println(err)
+	}
 
 	var xv model.XVid
 	lib.MDB.XVidModel().FindOne(context.Background(), bson.D{{"_id", int(id)}}).Decode(&xv)
 	GrabVideo(videoID, &xv)
 
-	update := bson.D{{"$set", xv}}
-	lib.MDB.XVidModel().UpdateOne(context.TODO(), bson.D{{"_id", int(id)}}, update)
+	//update := bson.D{{"$set", xv}}
+	//lib.MDB.XVidModel().UpdateOne(context.TODO(), bson.D{{"_id", int(id)}}, update)
 
 	//opts := options.FindOneAndReplace().SetUpsert(true)
 	//lib.MDB.XVidModel().FindOneAndReplace(context.TODO(), bson.D{{"videoId", int(id)}}, xv, opts)
@@ -365,9 +368,9 @@ func XVidGetVideo(w http.ResponseWriter, req *http.Request, ps httprouter.Params
 	// e := models.CXVid.FindOneAndReplace(context.TODO(), bson.D{{"videoId", int(id)}}, xv, opts).Decode(&replacedDocument)
 	// fmt.Println(e, replacedDocument)
 
-	bs, err := json.Marshal(xv)
+	w.Header().Set("Content-Type", "application/json")
+	err = json.NewEncoder(w).Encode(xv)
 	if err != nil {
-		fmt.Println(err)
+		log.Println(err)
 	}
-	fmt.Fprintln(w, string(bs))
 }
