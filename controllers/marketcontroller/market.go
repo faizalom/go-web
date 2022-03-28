@@ -284,16 +284,8 @@ func (c MarketController) List(w http.ResponseWriter, r *http.Request, _ httprou
 		markets = append(markets, market)
 	}
 
-	data := struct {
-		BaseCoin string
-		Markets  interface{}
-	}{
-		BaseCoin,
-		markets,
-	}
-
 	w.Header().Set("Content-Type", "application/json")
-	err = json.NewEncoder(w).Encode(data)
+	err = json.NewEncoder(w).Encode(markets)
 	if err != nil {
 		log.Println(err)
 	}

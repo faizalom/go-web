@@ -33,6 +33,11 @@ var SideMenu = []theme.Navlink{
 		Icon: "fas fa-th",
 		Text: "Staff",
 	},
+	{
+		Link: "/u/market",
+		Icon: "fas fa-tachometer-alt",
+		Text: "Market",
+	},
 }
 
 var Theme theme.AdminThemeTemplete

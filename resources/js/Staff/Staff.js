@@ -97,7 +97,7 @@ function Staff(props) {
                                 </td>
                             </tr>
                         ))}
-                        {(Object.keys(users).length == 0 && !isLoading) ? <tr><td colSpan={8} className="text-center">No data to show</td></tr> : ''}
+                        {(Object.keys(users).length == 0 && !isLoading) ? <tr><td colSpan={8} className="text-center">No data to show</td></tr> : null}
                     </tbody>
                 </table>
             </div>
