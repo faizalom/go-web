@@ -34,7 +34,7 @@ func main() {
 	router.POST("/login", middleware.Logger(controllers.LoginSubmit))
 	router.GET("/logout", middleware.Logger(controllers.Logout))
 	//router.GET("/u/*filepath", middleware.AuthMiddleware(controllers.CoreUI))
-	router.GET("/u/*filepath", middleware.AuthMiddleware(controllers.CoreUI))
+	router.GET("/u/*filepath", middleware.AuthMiddleware(controllers.CoreUIHome))
 
 	router.GET("/api/staff", middleware.AuthMiddleware(apis.GetStaff))
 	router.POST("/api/staff", middleware.AuthMiddleware(apis.StaffStore))

@@ -1,6 +1,7 @@
 package controllers
 
 import (
+	"encoding/json"
 	"fmt"
 	"log"
 	"net/http"
@@ -46,4 +47,25 @@ func Logout(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
 		log.Println(err)
 	}
 	http.Redirect(w, r, "/login", http.StatusSeeOther)
+}
+
+func CoreUIHome(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
+	auth, _ := lib.Auth(r)
+	user, _ := lib.MDB.AuthUser(auth)
+
+	data := make(map[string]interface{})
+	data["user"] = user
+
+	jsonB, err := json.Marshal(data)
+	if err != nil {
+		log.Println(err)
+	}
+	jsonStr := string(jsonB)
+
+	resp := struct {
+		Json string
+	}{
+		jsonStr,
+	}
+	lib.Theme.ExeTemp(w, r, "views/react.html", resp)
 }
