@@ -9,7 +9,7 @@ import (
 	"sync"
 	"time"
 
-	"github.com/faizalom/go-web/controllers"
+	"github.com/faizalom/go-web/controllers/xvcontroller"
 	"github.com/faizalom/go-web/lib"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/mongo/options"
@@ -50,7 +50,7 @@ func GetXV() {
 func updateXv(xv model.XVid) {
 	defer wg.Done()
 	VideoID := strconv.Itoa(xv.VideoID)
-	controllers.GrabVideo(VideoID, &xv)
+	xvcontroller.GrabVideo(VideoID, &xv)
 
 	if xv.Dates.DeletedAt != NilDate {
 		// bxv, _ := json.Marshal(xv)

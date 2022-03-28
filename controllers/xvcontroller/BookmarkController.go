@@ -1,4 +1,4 @@
-package controllers
+package xvcontroller
 
 import (
 	"encoding/json"

@@ -10,6 +10,8 @@ import (
 
 	"github.com/faizalom/go-web/controllers"
 	"github.com/faizalom/go-web/controllers/apis"
+	"github.com/faizalom/go-web/controllers/marketcontroller"
+	"github.com/faizalom/go-web/controllers/xvcontroller"
 	"github.com/faizalom/go-web/middleware"
 
 	"github.com/julienschmidt/httprouter"
@@ -42,8 +44,10 @@ func main() {
 	router.POST("/api/staff-available", middleware.AuthMiddleware(apis.CheckStaffAvailable))
 	router.PUT("/api/staff/:id", middleware.AuthMiddleware(apis.UpdateStaffByID))
 
-	router.GET("/xv", middleware.AuthMiddleware(controllers.XVIndex))
-	router.GET("/xv/:videoId", middleware.AuthMiddleware(controllers.XVidGetVideo))
+	router.GET("/xv", middleware.AuthMiddleware(xvcontroller.XVIndex))
+	router.GET("/xv/:videoId", middleware.AuthMiddleware(xvcontroller.XVidGetVideo))
+
+	router.GET("/market", marketcontroller.NewMarketController().List)
 
 	log.Fatal(http.ListenAndServe(":8181", router))
 }
