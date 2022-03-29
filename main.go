@@ -47,7 +47,8 @@ func main() {
 	router.GET("/xv", middleware.AuthMiddleware(xvcontroller.XVIndex))
 	router.GET("/xv/:videoId", middleware.AuthMiddleware(xvcontroller.XVidGetVideo))
 
-	router.GET("/market", marketcontroller.NewMarketController().List)
+	router.GET("/market", marketcontroller.NewMarketController().Trades)
+	router.GET("/great-trade", marketcontroller.NewMarketController().Trades)
 
 	log.Fatal(http.ListenAndServe(":8181", router))
 }

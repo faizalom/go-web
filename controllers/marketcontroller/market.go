@@ -8,6 +8,7 @@ import (
 	"log"
 	"math"
 	"net/http"
+	"sort"
 	"strconv"
 	"strings"
 	"time"
@@ -249,14 +250,20 @@ func (c MarketController) CoinBuy(w http.ResponseWriter, r *http.Request, _ http
 	// t.ExecuteTemplate(w, "watch.html", data)
 }
 
-func (c MarketController) List(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
+func (c MarketController) Trades(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
 	BaseCoin = "USDT"
 	ticker, err := coindcx.GetExchange()
 	if err != nil {
 		log.Println(err)
 	}
 	//MaxLeverageShort interface{}
-	var markets []interface{}
+	var markets []struct {
+		coindcx.Ticker
+		Coin         string
+		LowNowMargin float64
+		Timestamp    time.Time
+		LowHighPer   float64
+	}
 	for _, t := range ticker {
 		if !strings.Contains(t.Market, BaseCoin) {
 			continue
@@ -281,28 +288,61 @@ func (c MarketController) List(w http.ResponseWriter, r *http.Request, _ httprou
 			Timestamp:    timeUnix,
 			LowHighPer:   lowHighPer,
 		}
-		markets = append(markets, market)
+
+		if r.URL.Path == "/favs" {
+			for Pair, _ := range WatchList {
+				if Pair == t.Market {
+					markets = append(markets, market)
+				}
+			}
+		} else if r.URL.Path == "/great-trade" {
+			NowHighPer := (high/lastPrice - 1) * 100
+			if NowHighPer > 9 {
+				markets = append(markets, market)
+			}
+		} else {
+			markets = append(markets, market)
+		}
 	}
 
-	data := struct {
-		BaseCoin string
-		Markets  interface{}
-	}{
-		BaseCoin,
-		markets,
+	// sortColumn, _ := r.URL.Query()["sort_column"]
+	// if sortColumn == "change_24_hour" {
+	// 	sort.Slice(markets, func(i, j int) bool {
+	// 		return markets[i].Change24Hour < markets[j].Change24Hour
+	// 	})
+	// }
+
+	sortDir := r.URL.Query().Get("sort_dir")
+	sortColumn := r.URL.Query().Get("sort_column")
+	if sortColumn == "change_24_hour" && sortDir == "1" {
+		sort.Slice(markets, func(i, j int) bool {
+			ci, _ := strconv.ParseFloat(markets[i].Change24Hour, 64)
+			cj, _ := strconv.ParseFloat(markets[j].Change24Hour, 64)
+			return ci < cj
+		})
+	}
+	if sortColumn == "change_24_hour" && sortDir == "0" {
+		sort.Slice(markets, func(i, j int) bool {
+			ci, _ := strconv.ParseFloat(markets[i].Change24Hour, 64)
+			cj, _ := strconv.ParseFloat(markets[j].Change24Hour, 64)
+			return ci > cj
+		})
+	}
+
+	if sortColumn == "market" && sortDir == "1" {
+		sort.Slice(markets, func(i, j int) bool {
+			return markets[i].Market < markets[j].Market
+		})
+	}
+	if sortColumn == "market" && sortDir == "0" {
+		sort.Slice(markets, func(i, j int) bool {
+			return markets[i].Market > markets[j].Market
+		})
 	}
 
 	w.Header().Set("Content-Type", "application/json")
-	err = json.NewEncoder(w).Encode(data)
+	err = json.NewEncoder(w).Encode(markets)
 	if err != nil {
 		log.Println(err)
 	}
-
-	// Path := "/home/ubuntu/coindcx"
-	// if runtime.GOOS == "windows" {
-	// 	Path, _ = os.Getwd()
-	// }
-	// t := adminlte.GetTemplate()
-	// t.Funcs(fm).ParseFiles(Path + "/templates/dashboard.html")
-	// t.ExecuteTemplate(w, "dashboard.html", data)
 }
