@@ -6,7 +6,6 @@ import (
 	"helper/api/coindcx"
 	"helper/api/telegram"
 	"log"
-	"math"
 	"net/http"
 	"sort"
 	"strconv"
@@ -36,21 +35,6 @@ var WatchList map[string]bool
 var BuyCoin map[string]bool
 var BuyCoinBuyPrice map[string]float64
 var BuyCoinSellPrice map[string]float64
-
-func getVariance(datas ...float64) (float32, float32, float32) {
-	var sum float64
-	for _, v := range datas {
-		sum += v
-	}
-	mean := sum / float64(len(datas))
-	var xim2 float64
-	for _, v := range datas {
-		xim2 += math.Pow(v-mean, 2)
-	}
-	Varience := math.Sqrt(xim2 / float64(len(datas)))
-	VariencePer := (Varience / mean) * 100
-	return float32(mean), float32(Varience), float32(VariencePer)
-}
 
 func (c MarketController) MarketCoin(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
 	MarketName := ps.ByName("market")
@@ -284,7 +268,7 @@ func (c MarketController) Trades(w http.ResponseWriter, r *http.Request, _ httpr
 		}{
 			Ticker:       t,
 			Coin:         strings.Replace(t.Market, BaseCoin, "", -1),
-			LowNowMargin: lastPrice / low,
+			LowNowMargin: ((lastPrice - low) / low * 100),
 			Timestamp:    timeUnix,
 			LowHighPer:   lowHighPer,
 		}
@@ -292,18 +276,25 @@ func (c MarketController) Trades(w http.ResponseWriter, r *http.Request, _ httpr
 		if r.URL.Path == "/favs" {
 			for Pair, _ := range WatchList {
 				if Pair == t.Market {
+					wg.Add(1)
+					go GetCandles(t.Market)
 					markets = append(markets, market)
 				}
 			}
 		} else if r.URL.Path == "/great-trade" {
 			NowHighPer := (high/lastPrice - 1) * 100
 			if NowHighPer > 9 {
+				wg.Add(1)
+				go GetCandles(t.Market)
 				markets = append(markets, market)
 			}
 		} else {
+			wg.Add(1)
+			go GetCandles(t.Market)
 			markets = append(markets, market)
 		}
 	}
+	wg.Wait()
 
 	// sortColumn, _ := r.URL.Query()["sort_column"]
 	// if sortColumn == "change_24_hour" {
@@ -337,6 +328,28 @@ func (c MarketController) Trades(w http.ResponseWriter, r *http.Request, _ httpr
 	if sortColumn == "market" && sortDir == "0" {
 		sort.Slice(markets, func(i, j int) bool {
 			return markets[i].Market > markets[j].Market
+		})
+	}
+
+	if sortColumn == "LowHighPer" && sortDir == "1" {
+		sort.Slice(markets, func(i, j int) bool {
+			return markets[i].LowHighPer < markets[j].LowHighPer
+		})
+	}
+	if sortColumn == "LowHighPer" && sortDir == "0" {
+		sort.Slice(markets, func(i, j int) bool {
+			return markets[i].LowHighPer > markets[j].LowHighPer
+		})
+	}
+
+	if sortColumn == "LowNowMargin" && sortDir == "1" {
+		sort.Slice(markets, func(i, j int) bool {
+			return markets[i].LowNowMargin < markets[j].LowNowMargin
+		})
+	}
+	if sortColumn == "LowNowMargin" && sortDir == "0" {
+		sort.Slice(markets, func(i, j int) bool {
+			return markets[i].LowNowMargin > markets[j].LowNowMargin
 		})
 	}
 

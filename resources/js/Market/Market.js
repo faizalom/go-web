@@ -90,10 +90,17 @@ function Market(props) {
                                 {sortColumn == "change_24_hour" && sortDir == 1 && <span className="fas fa-sort-up"/>}
                                 {sortColumn == "change_24_hour" && sortDir == 0 && <span className="fas fa-sort-down"/>}
                             </th>
-                            <th>E-Mail</th>
-                            <th>Username</th>
-                            <th>City</th>
-                            <th>#</th>
+                            <th onClick={() => sortHandler("LowHighPer")} className="pointer">
+                                L-H % {sortColumn != "LowHighPer" && <span className="fas fa-sort"/>}
+                                {sortColumn == "LowHighPer" && sortDir == 1 && <span className="fas fa-sort-up"/>}
+                                {sortColumn == "LowHighPer" && sortDir == 0 && <span className="fas fa-sort-down"/>}
+                            </th>
+                            <th onClick={() => sortHandler("LowNowMargin")} className="pointer">
+                                L-N % {sortColumn != "LowNowMargin" && <span className="fas fa-sort"/>}
+                                {sortColumn == "LowNowMargin" && sortDir == 1 && <span className="fas fa-sort-up"/>}
+                                {sortColumn == "LowNowMargin" && sortDir == 0 && <span className="fas fa-sort-down"/>}
+                            </th>
+                            <th>&nbsp;</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -117,10 +124,6 @@ function Market(props) {
                                     }
                                 </td>
                                 <td>
-                                    <div>{pairs[key].market.replace("USDT", "")}</div>
-                                    <div className="small text-medium-emphasis"><span>{pairs[key].ask} ASK</span> | {pairs[key].bid} BID</div>
-                                </td>
-                                <td>
                                     <div>
                                         <div className="clearfix">
                                             <div className="float-start">
@@ -137,10 +140,11 @@ function Market(props) {
                                     <div className="small text-medium-emphasis">{pairs[key].last_price}</div>
                                     <div className="fw-semibold">{pairs[key].LowNowMargin.toFixed(4)}%</div>
                                 </td>
-                                <td className="text-right">
-                                    <a target="_blank" href={"https://coindcx.com/trade/" + pairs[key].market} className="mx-1"><i class="fas fa-chart-line fa-lg"></i></a>
-                                    <Link to={"/u/staff/edit/" + pairs[key].id} className="mx-1"><i className="fas fa-edit fa-lg"></i></Link>
-                                    <button className="btn btn-link p-0" onClick={(e) => deleteCoins(pairs[key].id)}><i className="fas fa-trash fa-lg"></i></button>
+                                <td>
+                                    <a target="_blank" href={"https://coindcx.com/trade/" + pairs[key].market} class="btn btn-outline-primary btn-sm me-1"><i class="fas fa-chart-line"></i></a>
+                                    <a target="_blank" href={"http://54.226.90.68:8080/trade/" + pairs[key].market} class="btn btn-outline-info btn-sm me-1"><i class="fas fa-chart-bar"></i></a>
+                                    <a target="_blank" href={"http://54.226.90.68:8080/watch?coin=" + pairs[key].market + "&watch=1"} class="btn btn-outline-secondary btn-sm me-1"><i class="fas fa-eye"></i></a>
+                                    <a target="_blank" href={"http://54.226.90.68:8080/buy?coin=" + pairs[key].market + "&buy=1&sell_price=1"} class="btn btn-outline-secondary btn-sm me-1"><i class="fas fa-cart-arrow-down"></i></a>
                                 </td>
                             </tr>
                         ))}
