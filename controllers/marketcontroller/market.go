@@ -247,7 +247,11 @@ func (c MarketController) Trades(w http.ResponseWriter, r *http.Request, _ httpr
 		LowNowMargin float64
 		Timestamp    time.Time
 		LowHighPer   float64
+		CandleMean
 	}
+
+	marketsDetails, _ := coindcx.GetMarketsDetails()
+
 	for _, t := range ticker {
 		if !strings.Contains(t.Market, BaseCoin) {
 			continue
@@ -265,6 +269,7 @@ func (c MarketController) Trades(w http.ResponseWriter, r *http.Request, _ httpr
 			LowNowMargin float64
 			Timestamp    time.Time
 			LowHighPer   float64
+			CandleMean
 		}{
 			Ticker:       t,
 			Coin:         strings.Replace(t.Market, BaseCoin, "", -1),
@@ -277,20 +282,24 @@ func (c MarketController) Trades(w http.ResponseWriter, r *http.Request, _ httpr
 			for Pair, _ := range WatchList {
 				if Pair == t.Market {
 					wg.Add(1)
-					go GetCandles(t.Market)
+					go GetCandles(t.Market, &market.CandleMean)
 					markets = append(markets, market)
 				}
 			}
 		} else if r.URL.Path == "/great-trade" {
 			NowHighPer := (high/lastPrice - 1) * 100
 			if NowHighPer > 9 {
-				wg.Add(1)
-				go GetCandles(t.Market)
-				markets = append(markets, market)
+				for _, m := range marketsDetails {
+					if m.CoindcxName == t.Market {
+						wg.Add(1)
+						go GetCandles(m.Pair, &market.CandleMean)
+						markets = append(markets, market)
+					}
+				}
 			}
 		} else {
-			wg.Add(1)
-			go GetCandles(t.Market)
+			//wg.Add(1)
+			//go GetCandles(t.Market, &market.CandleMean)
 			markets = append(markets, market)
 		}
 	}

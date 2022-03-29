@@ -2,7 +2,6 @@ package marketcontroller
 
 import (
 	"encoding/csv"
-	"fmt"
 	"helper/api/coindcx"
 	"log"
 	"math"
@@ -41,7 +40,7 @@ func allCoin() {
 			continue
 		}
 		wg.Add(1)
-		go GetCandles(t.Pair)
+		//go GetCandles(t.Pair)
 	}
 	wg.Wait()
 	csvwriter.Flush()
@@ -63,7 +62,15 @@ func getVariance(datas ...float64) (float32, float32, float32) {
 	return float32(mean), float32(Varience), float32(VariencePer)
 }
 
-func GetCandles(pair string) {
+type CandleMean struct {
+	Mean        float32
+	Variance    float32
+	VariencePer float32
+	Min         float64
+	Max         float64
+}
+
+func GetCandles(pair string, candleMean *CandleMean) {
 	defer wg.Done()
 	candles10, _ := coindcx.GetCandles(pair, "1d", "10")
 	//fmt.Printf("len=%d cap=%d\n", len(candles10), cap(candles10))
@@ -79,16 +86,26 @@ func GetCandles(pair string) {
 		}
 		mean, variance, VariencePer := getVariance(x10Low...)
 		//mean, variance, VariencePer := getVariance(9, 2, 5, 4, 12, 7, 8, 11, 9, 3, 7, 4, 12, 5, 4, 10, 9, 6, 9, 4)
-		fmt.Println(pair, mean, variance, VariencePer)
+		candleMean.Min = GetMinPercent(candles10)
+		candleMean.Max = GetMaxPercent(candles10)
 
-		min := GetMinPercent(candles10)
-		max := GetMaxPercent(candles10)
+		candleMean.Mean = mean
+		candleMean.Variance = variance
+		candleMean.VariencePer = VariencePer
 
-		d := []string{pair, fmt.Sprint(mean), fmt.Sprint(variance), fmt.Sprint(VariencePer), fmt.Sprint(min), fmt.Sprint(max)}
-		err := csvwriter.Write(d)
-		if err != nil {
-			log.Fatalf("failed creating file: %s", err)
-		}
+		// candleMean = CandleMean{
+		// 	Mean:        mean,
+		// 	Variance:    variance,
+		// 	VariencePer: VariencePer,
+		// 	Min:         min,
+		// 	Max:         max,
+		// }
+
+		//d := []string{pair, fmt.Sprint(mean), fmt.Sprint(variance), fmt.Sprint(VariencePer), fmt.Sprint(min), fmt.Sprint(max)}
+		// err := csvwriter.Write(d)
+		// if err != nil {
+		// 	log.Fatalf("failed creating file: %s", err)
+		// }
 	}
 }
 
