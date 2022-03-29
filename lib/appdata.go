@@ -38,6 +38,11 @@ var SideMenu = []theme.Navlink{
 		Icon: "fas fa-tachometer-alt",
 		Text: "Market",
 	},
+	{
+		Link: "/u/book",
+		Icon: "fas fa-book",
+		Text: "Book",
+	},
 }
 
 var Theme theme.AdminThemeTemplete
