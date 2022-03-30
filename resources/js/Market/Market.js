@@ -100,6 +100,21 @@ function Market(props) {
                                 {sortColumn == "LowNowMargin" && sortDir == 1 && <span className="fas fa-sort-up"/>}
                                 {sortColumn == "LowNowMargin" && sortDir == 0 && <span className="fas fa-sort-down"/>}
                             </th>
+                            <th onClick={() => sortHandler("VariencePer")} className="pointer">
+                                Variance % {sortColumn != "VariencePer" && <span className="fas fa-sort"/>}
+                                {sortColumn == "VariencePer" && sortDir == 1 && <span className="fas fa-sort-up"/>}
+                                {sortColumn == "VariencePer" && sortDir == 0 && <span className="fas fa-sort-down"/>}
+                            </th>
+                            <th onClick={() => sortHandler("Min")} className="pointer">
+                                Min % {sortColumn != "Min" && <span className="fas fa-sort"/>}
+                                {sortColumn == "Min" && sortDir == 1 && <span className="fas fa-sort-up"/>}
+                                {sortColumn == "Min" && sortDir == 0 && <span className="fas fa-sort-down"/>}
+                            </th>
+                            <th onClick={() => sortHandler("Max")} className="pointer">
+                                Max % {sortColumn != "Max" && <span className="fas fa-sort"/>}
+                                {sortColumn == "Max" && sortDir == 1 && <span className="fas fa-sort-up"/>}
+                                {sortColumn == "Max" && sortDir == 0 && <span className="fas fa-sort-down"/>}
+                            </th>
                             <th>&nbsp;</th>
                         </tr>
                     </thead>
@@ -138,8 +153,14 @@ function Market(props) {
                                 </td>
                                 <td>
                                     <div className="small text-medium-emphasis">{pairs[key].last_price}</div>
-                                    <div className="fw-semibold">{pairs[key].LowNowMargin.toFixed(4)}%</div>
+                                    <div className="fw-semibold">{pairs[key].LowNowMargin.toFixed(2)}%</div>
                                 </td>
+                                <td>
+                                    <div className="small text-medium-emphasis">{pairs[key].Variance}</div>
+                                    <div className="fw-semibold">{pairs[key].VariencePer.toFixed(2)}%</div>
+                                </td>
+                                <td>{pairs[key].Min.toFixed(4)}%</td>
+                                <td>{pairs[key].Max.toFixed(4)}%</td>
                                 <td>
                                     <a target="_blank" href={"https://coindcx.com/trade/" + pairs[key].market} class="btn btn-outline-primary btn-sm me-1"><i class="fas fa-chart-line"></i></a>
                                     <a target="_blank" href={"http://54.226.90.68:8080/trade/" + pairs[key].market} class="btn btn-outline-info btn-sm me-1"><i class="fas fa-chart-bar"></i></a>

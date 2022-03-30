@@ -292,8 +292,11 @@ func (c MarketController) Trades(w http.ResponseWriter, r *http.Request, _ httpr
 				for _, m := range marketsDetails {
 					if m.CoindcxName == t.Market {
 						wg.Add(1)
-						go GetCandles(m.Pair, &market.CandleMean)
-						markets = append(markets, market)
+						go func() {
+							defer wg.Done()
+							GetCandles(m.Pair, &market.CandleMean)
+							markets = append(markets, market)
+						}()
 					}
 				}
 			}
@@ -359,6 +362,39 @@ func (c MarketController) Trades(w http.ResponseWriter, r *http.Request, _ httpr
 	if sortColumn == "LowNowMargin" && sortDir == "0" {
 		sort.Slice(markets, func(i, j int) bool {
 			return markets[i].LowNowMargin > markets[j].LowNowMargin
+		})
+	}
+
+	if sortColumn == "VariencePer" && sortDir == "1" {
+		sort.Slice(markets, func(i, j int) bool {
+			return markets[i].LowNowMargin < markets[j].LowNowMargin
+		})
+	}
+	if sortColumn == "VariencePer" && sortDir == "0" {
+		sort.Slice(markets, func(i, j int) bool {
+			return markets[i].VariencePer > markets[j].VariencePer
+		})
+	}
+
+	if sortColumn == "Min" && sortDir == "1" {
+		sort.Slice(markets, func(i, j int) bool {
+			return markets[i].Min < markets[j].Min
+		})
+	}
+	if sortColumn == "Min" && sortDir == "0" {
+		sort.Slice(markets, func(i, j int) bool {
+			return markets[i].Min > markets[j].Min
+		})
+	}
+
+	if sortColumn == "Max" && sortDir == "1" {
+		sort.Slice(markets, func(i, j int) bool {
+			return markets[i].Max < markets[j].Max
+		})
+	}
+	if sortColumn == "Max" && sortDir == "0" {
+		sort.Slice(markets, func(i, j int) bool {
+			return markets[i].Max > markets[j].Max
 		})
 	}
 

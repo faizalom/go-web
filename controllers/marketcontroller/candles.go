@@ -71,7 +71,6 @@ type CandleMean struct {
 }
 
 func GetCandles(pair string, candleMean *CandleMean) {
-	defer wg.Done()
 	candles10, _ := coindcx.GetCandles(pair, "1d", "10")
 	//fmt.Printf("len=%d cap=%d\n", len(candles10), cap(candles10))
 	if len(candles10) == 10 {
