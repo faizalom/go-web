@@ -1,13 +1,17 @@
 package marketcontroller
 
 import (
+	"bytes"
 	"encoding/csv"
+	"encoding/gob"
+	"fmt"
 	"helper/api/coindcx"
 	"log"
 	"math"
 	"os"
 	"strings"
 	"sync"
+	"time"
 )
 
 var wg sync.WaitGroup
@@ -71,41 +75,50 @@ type CandleMean struct {
 }
 
 func GetCandles(pair string, candleMean *CandleMean) {
-	candles10, _ := coindcx.GetCandles(pair, "1d", "10")
-	//fmt.Printf("len=%d cap=%d\n", len(candles10), cap(candles10))
-	if len(candles10) == 10 {
-		data := make(map[string]interface{})
-		data["pair"] = pair
-		data["candles"] = candles10
-		Candles = append(Candles, data)
+	var network bytes.Buffer // Stand-in for a network connection
+	now := time.Now()        // current local time
+	sec := time.Date(now.Year(), now.Month(), now.Day(), 0, 0, 0, 0, time.UTC)
+	candles10 := []coindcx.Candle{}
 
-		x10Low := make([]float64, 0, 10)
-		for _, v := range candles10 {
-			x10Low = append(x10Low, v.Low)
+	fname := "candles/" + fmt.Sprint(sec.Unix()*1000) + "_" + pair
+	if _, err := os.Stat(fname); err == nil {
+		f, err := os.Open(fname)
+		if err != nil {
+			log.Fatal("fopen error:", err)
 		}
-		mean, variance, VariencePer := getVariance(x10Low...)
-		//mean, variance, VariencePer := getVariance(9, 2, 5, 4, 12, 7, 8, 11, 9, 3, 7, 4, 12, 5, 4, 10, 9, 6, 9, 4)
-		candleMean.Min = GetMinPercent(candles10)
-		candleMean.Max = GetMaxPercent(candles10)
 
-		candleMean.Mean = mean
-		candleMean.Variance = variance
-		candleMean.VariencePer = VariencePer
+		dec := gob.NewDecoder(f) // Will read from network.
+		err = dec.Decode(&candles10)
+		if err != nil {
+			log.Fatal("decode error:", err)
+		}
+	} else {
+		candles10, _ = coindcx.GetCandles(pair, "1d", "10")
+		// open output file
+		f, err := os.Create("candles/" + fmt.Sprint(candles10[0].Time) + "_" + pair)
+		if err != nil {
+			log.Println(err)
+		}
 
-		// candleMean = CandleMean{
-		// 	Mean:        mean,
-		// 	Variance:    variance,
-		// 	VariencePer: VariencePer,
-		// 	Min:         min,
-		// 	Max:         max,
-		// }
-
-		//d := []string{pair, fmt.Sprint(mean), fmt.Sprint(variance), fmt.Sprint(VariencePer), fmt.Sprint(min), fmt.Sprint(max)}
-		// err := csvwriter.Write(d)
-		// if err != nil {
-		// 	log.Fatalf("failed creating file: %s", err)
-		// }
+		enc := gob.NewEncoder(&network) // Will write to network.
+		err = enc.Encode(candles10)
+		if err != nil {
+			log.Println("encode error:", err)
+		}
+		f.Write(network.Bytes())
 	}
+
+	x10Low := make([]float64, 0, 10)
+	for _, v := range candles10 {
+		x10Low = append(x10Low, v.Low)
+	}
+	mean, variance, VariencePer := getVariance(x10Low...)
+	candleMean.Min = GetMinPercent(candles10)
+	candleMean.Max = GetMaxPercent(candles10)
+
+	candleMean.Mean = mean
+	candleMean.Variance = variance
+	candleMean.VariencePer = VariencePer
 }
 
 func GetMinPercent(candles []coindcx.Candle) float64 {

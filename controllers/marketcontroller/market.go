@@ -292,18 +292,25 @@ func (c MarketController) Trades(w http.ResponseWriter, r *http.Request, _ httpr
 				for _, m := range marketsDetails {
 					if m.CoindcxName == t.Market {
 						wg.Add(1)
-						go func() {
+						go func(pair string) {
 							defer wg.Done()
-							GetCandles(m.Pair, &market.CandleMean)
+							GetCandles(pair, &market.CandleMean)
 							markets = append(markets, market)
-						}()
+						}(m.Pair)
 					}
 				}
 			}
 		} else {
-			//wg.Add(1)
-			//go GetCandles(t.Market, &market.CandleMean)
-			markets = append(markets, market)
+			for _, m := range marketsDetails {
+				if m.CoindcxName == t.Market {
+					wg.Add(1)
+					go func(pair string) {
+						defer wg.Done()
+						GetCandles(pair, &market.CandleMean)
+						markets = append(markets, market)
+					}(m.Pair)
+				}
+			}
 		}
 	}
 	wg.Wait()
@@ -367,7 +374,7 @@ func (c MarketController) Trades(w http.ResponseWriter, r *http.Request, _ httpr
 
 	if sortColumn == "VariencePer" && sortDir == "1" {
 		sort.Slice(markets, func(i, j int) bool {
-			return markets[i].LowNowMargin < markets[j].LowNowMargin
+			return markets[i].VariencePer < markets[j].VariencePer
 		})
 	}
 	if sortColumn == "VariencePer" && sortDir == "0" {
