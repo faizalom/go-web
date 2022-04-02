@@ -71,7 +71,9 @@ type CandleMean struct {
 	Variance    float32
 	VariencePer float32
 	Min         float64
+	SecMin      float64
 	Max         float64
+	Candles10   []coindcx.Candle
 }
 
 func GetCandles(pair string, candleMean *CandleMean) {
@@ -114,11 +116,13 @@ func GetCandles(pair string, candleMean *CandleMean) {
 	}
 	mean, variance, VariencePer := getVariance(x10Low...)
 	candleMean.Min = GetMinPercent(candles10)
+	candleMean.SecMin = GetMinPercent(candles10)
 	candleMean.Max = GetMaxPercent(candles10)
 
 	candleMean.Mean = mean
 	candleMean.Variance = variance
 	candleMean.VariencePer = VariencePer
+	candleMean.Candles10 = candles10
 }
 
 func GetMinPercent(candles []coindcx.Candle) float64 {
