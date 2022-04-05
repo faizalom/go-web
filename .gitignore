@@ -19,3 +19,4 @@ public/css/app.css
 public/js/index.js
 error.log
 /candles
+runner/coindcx/candles

@@ -95,7 +95,10 @@ func GetCandles(pair string, candleMean *CandleMean) {
 			log.Fatal("decode error:", err)
 		}
 	} else {
-		candles10, _ = coindcx.GetCandles(pair, "1d", "10")
+		candles10, err = coindcx.GetCandles(pair, "1d", "10")
+		if err != nil {
+			log.Println(err)
+		}
 		// open output file
 		f, err := os.Create("candles/" + fmt.Sprint(candles10[0].Time) + "_" + pair)
 		if err != nil {
