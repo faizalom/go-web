@@ -15,6 +15,67 @@ var BaseCoin string
 var wg sync.WaitGroup
 
 func main() {
+	s := make([]int, 5)
+	fmt.Println(s[1:])
+
+	s = append(s[1:], 4)
+	fmt.Println(s)
+
+	s = append(s[1:], 4)
+	fmt.Println(s)
+
+	s = append(s[1:], 4)
+	fmt.Println(s)
+
+	x := make(map[string][]int)
+	x["XX"] = make([]int, 5)
+
+	x["XX"] = append(x["XX"][1:], 4)
+	fmt.Println(x)
+
+	x["XX"] = append(x["XX"][1:], 4)
+	fmt.Println(x)
+
+	x["XX"] = append(x["XX"][1:], 4)
+	fmt.Println(x)
+
+	// fmt.Println(len(s), s)
+	// for len(s) > 0 {
+	// 	x, s = s[0], s[1:] // undefined: x
+	// 	fmt.Println(x)     // undefined: x
+	// }
+	// fmt.Println(len(s), s)
+}
+
+func main2() {
+	fmt.Println("Works")
+	a := 5
+	b := 4
+	c := 3
+	d := 2
+	e := 1
+
+	rank := 0
+	if a >= b {
+		rank += 1
+	}
+	if b >= c {
+		rank += 1
+	}
+	if c >= d {
+		rank += 1
+	}
+	if d >= e {
+		rank += 1
+	}
+	if a > e {
+		rank += 1
+	}
+
+	fmt.Println(rank)
+}
+
+func main1() {
 	BaseCoin = "USDT"
 	marketsDetails, _ := coindcx.GetMarketsDetails()
 
@@ -38,7 +99,7 @@ func main() {
 						return
 					}
 
-					fmt.Println(candleMean.VariencePer)
+					WatchLow(t)
 
 					//tickerCalc := model.GetTickerCalc(t)
 					//fmt.Println(tickerCalc.NowHighPer)
@@ -63,4 +124,9 @@ func main() {
 		}
 	}
 	wg.Wait()
+}
+
+func WatchLow(t coindcx.Ticker) {
+	tickerCalc := model.GetTickerCalc(t)
+	fmt.Println(tickerCalc.LowHighPer)
 }
