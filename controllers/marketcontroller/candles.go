@@ -51,7 +51,8 @@ func allCoin() {
 	csvFile.Close()
 }
 
-func getVariance(datas ...float64) (float32, float32, float32) {
+// Returm Mean, Varience, VariencePer
+func GetVariance(datas ...float64) (float64, float64, float64) {
 	var sum float64
 	for _, v := range datas {
 		sum += v
@@ -63,20 +64,20 @@ func getVariance(datas ...float64) (float32, float32, float32) {
 	}
 	Varience := math.Sqrt(xim2 / float64(len(datas)))
 	VariencePer := (Varience / mean) * 100
-	return float32(mean), float32(Varience), float32(VariencePer)
+	return mean, Varience, VariencePer
 }
 
 type CandleMean struct {
-	Mean        float32
-	Variance    float32
-	VariencePer float32
+	Mean        float64
+	Variance    float64
+	VariencePer float64
 	Min         float64
 	SecMin      float64
 	Max         float64
 	Candles10   []coindcx.Candle
 }
 
-func GetCandles(pair string, candleMean *CandleMean) {
+func GetCandles(pair string, candleMean *CandleMean, len string) {
 	var network bytes.Buffer // Stand-in for a network connection
 	now := time.Now()        // current local time
 	sec := time.Date(now.Year(), now.Month(), now.Day(), 0, 0, 0, 0, time.UTC)
@@ -95,7 +96,7 @@ func GetCandles(pair string, candleMean *CandleMean) {
 			log.Fatal("decode error:", err)
 		}
 	} else {
-		candles10, err = coindcx.GetCandles(pair, "1d", "10")
+		candles10, err = coindcx.GetCandles(pair, "1d", len)
 		if err != nil {
 			log.Println(err)
 		}
@@ -117,7 +118,7 @@ func GetCandles(pair string, candleMean *CandleMean) {
 	for _, v := range candles10 {
 		x10Low = append(x10Low, v.Low)
 	}
-	mean, variance, VariencePer := getVariance(x10Low...)
+	mean, variance, VariencePer := GetVariance(x10Low...)
 	candleMean.Min = GetMinPercent(candles10)
 	candleMean.SecMin = GetMinPercent(candles10)
 	candleMean.Max = GetMaxPercent(candles10)

@@ -56,17 +56,17 @@ func (c MarketController) MarketCoin(w http.ResponseWriter, r *http.Request, ps 
 		x10Low = append(x10Low, v.Low)
 		x10Hig = append(x10Hig, v.High)
 	}
-	meanLow, varianceLow, variencePerLow := getVariance(x10Low...)
-	meanHigh, varianceHigh, variencePerHigh := getVariance(x10Hig...)
+	meanLow, varianceLow, variencePerLow := GetVariance(x10Low...)
+	meanHigh, varianceHigh, variencePerHigh := GetVariance(x10Hig...)
 	//mean, variance, VariencePer := getVariance(9, 2, 5, 4, 12, 7, 8, 11, 9, 3, 7, 4, 12, 5, 4, 10, 9, 6, 9, 4)
 
 	candles10Statics := struct {
-		MeanMin        float32
-		VarianceMin    float32
-		VariencePerMin float32
-		MeanMax        float32
-		VarianceMax    float32
-		VariencePerMax float32
+		MeanMin        float64
+		VarianceMin    float64
+		VariencePerMin float64
+		MeanMax        float64
+		VarianceMax    float64
+		VariencePerMax float64
 	}{
 		meanLow,
 		varianceLow,
@@ -282,7 +282,7 @@ func (c MarketController) Trades(w http.ResponseWriter, r *http.Request, _ httpr
 			for Pair, _ := range WatchList {
 				if Pair == t.Market {
 					wg.Add(1)
-					go GetCandles(t.Market, &market.CandleMean)
+					go GetCandles(t.Market, &market.CandleMean, "10")
 					markets = append(markets, market)
 				}
 			}
@@ -294,7 +294,7 @@ func (c MarketController) Trades(w http.ResponseWriter, r *http.Request, _ httpr
 						wg.Add(1)
 						go func(pair string) {
 							defer wg.Done()
-							GetCandles(pair, &market.CandleMean)
+							GetCandles(pair, &market.CandleMean, "10")
 							markets = append(markets, market)
 						}(m.Pair)
 					}
@@ -306,7 +306,7 @@ func (c MarketController) Trades(w http.ResponseWriter, r *http.Request, _ httpr
 					wg.Add(1)
 					go func(pair string) {
 						defer wg.Done()
-						GetCandles(pair, &market.CandleMean)
+						GetCandles(pair, &market.CandleMean, "10")
 						markets = append(markets, market)
 					}(m.Pair)
 				}
