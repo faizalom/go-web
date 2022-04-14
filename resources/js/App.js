@@ -21,6 +21,7 @@ function App() {
         <Route path="/u/xv" exact element={<XV />} />
         <Route path="/u/market" exact element={<Market />} />
         <Route path="/u/great-trade" exact element={<Market />} />
+        <Route path="/u/candle-mean" exact element={<Market />} />
         <Route path="/u/book" exact element={<Books />} />
       </Routes>
     </CoreUI>

@@ -300,6 +300,21 @@ func (c MarketController) Trades(w http.ResponseWriter, r *http.Request, _ httpr
 					}
 				}
 			}
+		} else if r.URL.Path == "/candle-mean" {
+			for _, m := range marketsDetails {
+				if m.CoindcxName == t.Market {
+					wg.Add(1)
+					go func(pair string, t coindcx.Ticker) {
+						defer wg.Done()
+						candleMean := CandleMean{}
+						GetCandles(pair, &candleMean, "5")
+						if candleMean.Min < 4 || candleMean.VariencePer > 6 {
+							return
+						}
+						markets = append(markets, market)
+					}(m.Pair, t)
+				}
+			}
 		} else {
 			for _, m := range marketsDetails {
 				if m.CoindcxName == t.Market {

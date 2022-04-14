@@ -49,6 +49,7 @@ func main() {
 
 	router.GET("/market", marketcontroller.NewMarketController().Trades)
 	router.GET("/great-trade", marketcontroller.NewMarketController().Trades)
+	router.GET("/candle-mean", marketcontroller.NewMarketController().Trades)
 
 	log.Fatal(http.ListenAndServe(":8181", router))
 }

@@ -35,9 +35,9 @@ const LSide = (props) => {
                             <i className={menu.Icon + " nav-icon" }></i> {menu.Text}
                         </NavLink>
                         {menu.Children && (
-                            <ul class="nav-group-items">
+                            <ul className="nav-group-items">
                                 {menu.Children.map(m =>
-                                    <li class="nav-item"><NavLink to={m.Link} className="nav-link">{m.Text}</NavLink></li>
+                                    <li className="nav-item"><NavLink to={m.Link} className="nav-link"  key={m.Link + m.Text}>{m.Text}</NavLink></li>
                                 )}
                             </ul>
                         )}

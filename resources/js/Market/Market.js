@@ -12,6 +12,7 @@ function Market(props) {
     const [refreshCoin, setRefreshCoin] = useState(0);
 
     const match = useMatch("u/great-trade")
+    const matchCandle = useMatch("u/candle-mean")
 
     useEffect(() => {
         const transformCoins = (data) => {
@@ -30,6 +31,8 @@ function Market(props) {
         let url = "/market"
         if (match) {
             url = "/great-trade"
+        } else if (matchCandle) {
+            url = "/candle-mean"
         }
         sendRequest({ "url": url + sort }, transformCoins)
     }, [sendRequest, refreshCoin, sortColumn, sortDir])
@@ -162,10 +165,10 @@ function Market(props) {
                                 <td>{pairs[key].Min.toFixed(4)}%</td>
                                 <td>{pairs[key].Max.toFixed(4)}%</td>
                                 <td>
-                                    <a target="_blank" href={"https://coindcx.com/trade/" + pairs[key].market} class="btn btn-outline-primary btn-sm me-1"><i class="fas fa-chart-line"></i></a>
-                                    <a target="_blank" href={"http://54.226.90.68:8080/trade/" + pairs[key].market} class="btn btn-outline-info btn-sm me-1"><i class="fas fa-chart-bar"></i></a>
-                                    <a target="_blank" href={"http://54.226.90.68:8080/watch?coin=" + pairs[key].market + "&watch=1"} class="btn btn-outline-secondary btn-sm me-1"><i class="fas fa-eye"></i></a>
-                                    <a target="_blank" href={"http://54.226.90.68:8080/buy?coin=" + pairs[key].market + "&buy=1&sell_price=1"} class="btn btn-outline-secondary btn-sm me-1"><i class="fas fa-cart-arrow-down"></i></a>
+                                    <a target="_blank" href={"https://coindcx.com/trade/" + pairs[key].market} className="btn btn-outline-primary btn-sm me-1"><i className="fas fa-chart-line"></i></a>
+                                    <a target="_blank" href={"http://54.226.90.68:8080/trade/" + pairs[key].market} className="btn btn-outline-info btn-sm me-1"><i className="fas fa-chart-bar"></i></a>
+                                    <a target="_blank" href={"http://54.226.90.68:8080/watch?coin=" + pairs[key].market + "&watch=1"} className="btn btn-outline-secondary btn-sm me-1"><i className="fas fa-eye"></i></a>
+                                    <a target="_blank" href={"http://54.226.90.68:8080/buy?coin=" + pairs[key].market + "&buy=1&sell_price=1"} className="btn btn-outline-secondary btn-sm me-1"><i className="fas fa-cart-arrow-down"></i></a>
                                 </td>
                             </tr>
                         ))}

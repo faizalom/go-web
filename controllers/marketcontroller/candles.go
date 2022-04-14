@@ -12,6 +12,8 @@ import (
 	"strings"
 	"sync"
 	"time"
+
+	"github.com/faizalom/go-web/lib"
 )
 
 var wg sync.WaitGroup
@@ -83,7 +85,7 @@ func GetCandles(pair string, candleMean *CandleMean, len string) {
 	sec := time.Date(now.Year(), now.Month(), now.Day(), 0, 0, 0, 0, time.UTC)
 	candles10 := []coindcx.Candle{}
 
-	fname := "candles/" + fmt.Sprint(sec.Unix()*1000) + "_" + pair
+	fname := lib.TempCandPath + "/" + fmt.Sprint(sec.Unix()*1000) + "_" + pair
 	if _, err := os.Stat(fname); err == nil {
 		f, err := os.Open(fname)
 		if err != nil {
@@ -99,17 +101,19 @@ func GetCandles(pair string, candleMean *CandleMean, len string) {
 		candles10, err = coindcx.GetCandles(pair, "1d", len)
 		if err != nil {
 			log.Println(err)
-		}
-		// open output file
-		f, err := os.Create("candles/" + fmt.Sprint(candles10[0].Time) + "_" + pair)
-		if err != nil {
-			log.Println(err)
+			return
 		}
 
 		enc := gob.NewEncoder(&network) // Will write to network.
 		err = enc.Encode(candles10)
 		if err != nil {
 			log.Println("encode error:", err)
+			return
+		}
+
+		f, err := os.Create(lib.TempCandPath + "/" + fmt.Sprint(candles10[0].Time) + "_" + pair)
+		if err != nil {
+			log.Println(err)
 		}
 		f.Write(network.Bytes())
 	}
