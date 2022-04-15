@@ -43,6 +43,7 @@ func main() {
 	log.SetOutput(logFile)
 	log.SetFlags(log.LstdFlags | log.Lshortfile)
 	log.Println("Started")
+	telegram.SendMessage("Started: Candle Runner")
 
 	BaseCoin = "USDT"
 
@@ -53,7 +54,7 @@ func main() {
 			continue
 		}
 
-		okMarket := ""
+		okMarket := make([]string, 0)
 		for _, t := range ticker {
 			if !strings.Contains(t.Market, BaseCoin) {
 				continue
@@ -67,11 +68,12 @@ func main() {
 			}
 			LastPrice, _ := strconv.ParseFloat(t.LastPrice, 64)
 			if (candleMean.Mean + candleMean.Variance) > LastPrice {
-				okMarket += t.Market + "\n"
+				okMarket = append(okMarket, t.Market)
+
 			}
 		}
-		if okMarket != "" {
-			telegram.SendMessage(okMarket)
+		if len(okMarket) > 1 {
+			telegram.SendMessage(strings.Join(okMarket, "-"))
 		}
 	}
 }

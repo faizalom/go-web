@@ -5,6 +5,7 @@ import (
 	"context"
 	"encoding/gob"
 	"helper/api/coindcx"
+	"helper/api/telegram"
 	"log"
 	"os"
 	"sync"
@@ -15,9 +16,7 @@ import (
 )
 
 var BaseCoin string
-
 var wg sync.WaitGroup
-var network bytes.Buffer // Stand-in for a network connection
 
 func main() {
 
@@ -29,6 +28,7 @@ func main() {
 	log.SetOutput(logFile)
 	log.SetFlags(log.LstdFlags | log.Lshortfile)
 	log.Println("Started")
+	telegram.SendMessage("Started: Candle Store")
 
 	BaseCoin = "USDT"
 	marketsDetails, _ := coindcx.GetMarketsDetails()
@@ -56,6 +56,7 @@ func GrabCandle(v coindcx.MarketsDetails) {
 	candleMean := marketcontroller.CandleMean{}
 	marketcontroller.GetCandles(v.Pair, &candleMean, "5")
 
+	var network bytes.Buffer        // Stand-in for a network connection
 	enc := gob.NewEncoder(&network) // Will write to network.
 	err := enc.Encode(candleMean)
 	if err != nil {
