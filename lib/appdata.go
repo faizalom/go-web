@@ -56,6 +56,7 @@ var SideMenu = []theme.Navlink{
 var Theme theme.AdminThemeTemplete
 var MDB model.MongoDB
 var TempCandPath string
+var LogPath string
 
 func init() {
 	Theme = theme.CoreUITheme
@@ -67,6 +68,16 @@ func init() {
 	TempCandPath = filepath.Join(os.TempDir(), "candles")
 	err := os.MkdirAll(TempCandPath, os.ModePerm)
 	if err != nil {
-		log.Println(err)
+		log.Panicln(err)
+	}
+
+	LogPath, err = os.UserHomeDir()
+	if err != nil {
+		log.Panicln(err)
+	}
+	LogPath = filepath.Join(LogPath, "logs/coindcx")
+	err = os.MkdirAll(LogPath, os.ModePerm)
+	if err != nil {
+		log.Panicln(err)
 	}
 }

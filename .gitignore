@@ -17,7 +17,3 @@
 /node_modules
 public/css/app.css
 public/js/index.js
-error.log
-access.log
-/candles
-runner/coindcx/candles

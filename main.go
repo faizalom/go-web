@@ -12,20 +12,21 @@ import (
 	"github.com/faizalom/go-web/controllers/apis"
 	"github.com/faizalom/go-web/controllers/marketcontroller"
 	"github.com/faizalom/go-web/controllers/xvcontroller"
+	"github.com/faizalom/go-web/lib"
 	"github.com/faizalom/go-web/middleware"
 
 	"github.com/julienschmidt/httprouter"
 )
 
 func main() {
-	logFile, err := os.OpenFile("error.log", os.O_RDWR|os.O_CREATE|os.O_APPEND, 0666)
+	logFile, err := os.OpenFile(lib.LogPath+"/go-web-error.log", os.O_RDWR|os.O_CREATE|os.O_APPEND, 0666)
 	if err != nil {
-		log.Fatalf("error opening file: %v", err)
+		panic(err)
 	}
 	//defer logFile.Close()
-
 	log.SetOutput(logFile)
 	log.SetFlags(log.LstdFlags | log.Lshortfile)
+	log.Println("Started")
 
 	router := httprouter.New()
 	router.ServeFiles("/public/*filepath", http.Dir("public"))

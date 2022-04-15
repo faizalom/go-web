@@ -13,9 +13,9 @@ import (
 var l = log.New(log.Writer(), log.Prefix(), log.Flags())
 
 func init() {
-	logFile, err := os.OpenFile("access.log", os.O_RDWR|os.O_CREATE|os.O_APPEND, 0666)
+	logFile, err := os.OpenFile(lib.LogPath+"/go-web-access.log", os.O_RDWR|os.O_CREATE|os.O_APPEND, 0666)
 	if err != nil {
-		log.Fatalf("error opening file: %v", err)
+		panic(err)
 	}
 	//defer logFile.Close()
 	l.SetOutput(logFile)
