@@ -2,6 +2,7 @@ package main
 
 import (
 	"bytes"
+	"context"
 	"encoding/gob"
 	"helper/api/coindcx"
 	"log"
@@ -68,4 +69,9 @@ func GrabCandle(v coindcx.MarketsDetails) {
 		return
 	}
 	f.Write(network.Bytes())
+
+	_, err = lib.MDB.Candle5Model().InsertOne(context.Background(), candleMean)
+	if err != nil {
+		log.Println(err)
+	}
 }
