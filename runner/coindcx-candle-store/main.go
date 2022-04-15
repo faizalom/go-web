@@ -1,46 +1,71 @@
 package main
 
 import (
-	"fmt"
+	"bytes"
+	"encoding/gob"
 	"helper/api/coindcx"
 	"log"
-	"strconv"
-	"strings"
+	"os"
+	"sync"
+	"time"
 
 	"github.com/faizalom/go-web/controllers/marketcontroller"
+	"github.com/faizalom/go-web/lib"
 )
 
 var BaseCoin string
 
+var wg sync.WaitGroup
+var network bytes.Buffer // Stand-in for a network connection
+
 func main() {
+
+	logFile, err := os.OpenFile(lib.LogPath+"/candle-store-error.log", os.O_RDWR|os.O_CREATE|os.O_APPEND, 0666)
+	if err != nil {
+		panic(err)
+	}
+	//defer logFile.Close()
+	log.SetOutput(logFile)
 	log.SetFlags(log.LstdFlags | log.Lshortfile)
+	log.Println("Started")
+
 	BaseCoin = "USDT"
 	marketsDetails, _ := coindcx.GetMarketsDetails()
-
-	ticker, err := coindcx.GetExchange()
-	if err != nil {
-		log.Println(err)
-	}
-
-	for _, t := range ticker {
-		if !strings.Contains(t.Market, BaseCoin) {
-			continue
+	for _, v := range marketsDetails {
+		if v.BaseCurrencyShortName == "USDT" || v.TargetCurrencyShortName == "USDT" {
+			wg.Add(1)
+			go GrabCandle(v)
 		}
-		for _, m := range marketsDetails {
-			if m.CoindcxName == t.Market {
-				pair := m.Pair
-				//go func(pair string, t coindcx.Ticker) {
-				candleMean := marketcontroller.CandleMean{}
-				marketcontroller.GetCandles(pair, &candleMean, "5")
-				if candleMean.Min < 4 || candleMean.VariencePer > 6 {
-					return
-				}
-				LastPrice, _ := strconv.ParseFloat(t.LastPrice, 64)
-				if (candleMean.Mean + candleMean.Variance) > LastPrice {
-					fmt.Println(t.Market, candleMean.VariencePer, candleMean.Min, candleMean.Max, candleMean.Mean, candleMean.Mean+candleMean.Variance, t.LastPrice)
-				}
-				//}(m.Pair, t)
+	}
+	wg.Wait()
+
+	for range time.Tick(time.Hour * 1) {
+		for _, v := range marketsDetails {
+			if v.BaseCurrencyShortName == "USDT" || v.TargetCurrencyShortName == "USDT" {
+				wg.Add(1)
+				go GrabCandle(v)
 			}
 		}
+		wg.Wait()
 	}
+}
+
+func GrabCandle(v coindcx.MarketsDetails) {
+	defer wg.Done()
+	candleMean := marketcontroller.CandleMean{}
+	marketcontroller.GetCandles(v.Pair, &candleMean, "5")
+
+	enc := gob.NewEncoder(&network) // Will write to network.
+	err := enc.Encode(candleMean)
+	if err != nil {
+		log.Println("encode error:", err)
+		return
+	}
+
+	f, err := os.Create(lib.TempCandPath + "/" + v.Symbol)
+	if err != nil {
+		log.Println(err)
+		return
+	}
+	f.Write(network.Bytes())
 }

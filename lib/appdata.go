@@ -64,17 +64,19 @@ func init() {
 	Theme.Title = "🦁FAPP"
 	MDB.Database = model.MongoDBLive()
 
+	logPath, err := os.UserHomeDir()
+	if err != nil {
+		log.Panicln(err)
+	}
+	LogPath = logPath
+
 	// open output file
-	TempCandPath = filepath.Join(os.TempDir(), "candles")
-	err := os.MkdirAll(TempCandPath, os.ModePerm)
+	TempCandPath = filepath.Join(LogPath, "logs/candles")
+	err = os.MkdirAll(TempCandPath, os.ModePerm)
 	if err != nil {
 		log.Panicln(err)
 	}
 
-	LogPath, err = os.UserHomeDir()
-	if err != nil {
-		log.Panicln(err)
-	}
 	LogPath = filepath.Join(LogPath, "logs/coindcx")
 	err = os.MkdirAll(LogPath, os.ModePerm)
 	if err != nil {
