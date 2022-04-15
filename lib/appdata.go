@@ -39,6 +39,11 @@ var SideMenu = []theme.Navlink{
 				Icon: "fas fa-tachometer-alt",
 				Text: "Candle Mean",
 			},
+			{
+				Link: "/u/low",
+				Icon: "fas fa-tachometer-alt",
+				Text: "Low",
+			},
 		},
 	},
 	{
