@@ -21,7 +21,7 @@ type ThemeStruct struct {
 	SideMenu []Navlink
 }
 
-func (t ThemeStruct) ExeTemp(w http.ResponseWriter, r *http.Request, templateFile string, data any) {
+func (t ThemeStruct) ExeTemp(w http.ResponseWriter, r *http.Request, templateFile string, data interface{}) {
 
 	jsonB, err := json.Marshal(t.SideMenu)
 	if err != nil {
