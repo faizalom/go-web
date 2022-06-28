@@ -1,11 +1,11 @@
-package templates
+package lib
 
 import (
 	"encoding/json"
+	"html/template"
 	"log"
 	"net/http"
 	"strings"
-	"text/template"
 )
 
 type Navlink struct {
@@ -19,16 +19,6 @@ type ThemeStruct struct {
 	Template *template.Template
 	Title    string
 	SideMenu []Navlink
-}
-
-//var Path, _ = os.Getwd()
-var ThemePath = "resources/templates/"
-
-//var ThemePath = "/home/ocs-11/Dropbox/go/src/theme/CoreUI/"
-var MyTheme ThemeStruct
-
-func init() {
-	MyTheme.Template = template.Must(template.ParseGlob(ThemePath + "*.html"))
 }
 
 func (t ThemeStruct) ExeTemp(w http.ResponseWriter, r *http.Request, templateFile string, data any) {
