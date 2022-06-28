@@ -10,6 +10,8 @@ import (
 	"net/http"
 	"os"
 	"regexp"
+
+	"github.com/faizalom/go-web/routers"
 )
 
 type Page struct {
@@ -83,8 +85,11 @@ func makeHandler(fn func(http.ResponseWriter, *http.Request, string)) http.Handl
 }
 
 func main() {
-	http.HandleFunc("/view/", makeHandler(viewHandler))
-	http.HandleFunc("/edit/", makeHandler(editHandler))
-	http.HandleFunc("/save/", makeHandler(saveHandler))
-	log.Fatal(http.ListenAndServe(":8080", nil))
+
+	log.Fatal(http.ListenAndServe(":80", routers.SetRoutes()))
+
+	// http.HandleFunc("/view/", makeHandler(viewHandler))
+	// http.HandleFunc("/edit/", makeHandler(editHandler))
+	// http.HandleFunc("/save/", makeHandler(saveHandler))
+	// log.Fatal(http.ListenAndServe(":8080", nil))
 }
