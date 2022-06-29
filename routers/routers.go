@@ -12,5 +12,7 @@ func SetRoutes() *httprouter.Router {
 	router.ServeFiles("/public/*filepath", http.Dir("public"))
 
 	router.GET("/", controllers.IndexContoller)
+	router.GET("/login", controllers.LoginIndexContoller)
+	router.POST("/login", controllers.LoginSubmitContoller)
 	return router
 }
