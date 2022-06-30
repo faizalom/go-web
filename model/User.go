@@ -50,14 +50,18 @@ func (m MongoDB) Login(u string, p string) (User, error) {
 	// 	}
 	// }
 
-	e := m.UserModel().FindOne(context.Background(), bson.M{"username": u}).Decode(&user)
+	e := m.UserModel().FindOne(context.Background(), bson.M{"email": u}).Decode(&user)
 	if e != nil {
+		// ErrNoDocuments means that the filter did not match any documents in the collection
+		if e == mongo.ErrNoDocuments {
+			return user, errors.New("email or password not matching")
+		}
 		log.Println(e)
 	}
 	if e == nil && user.Password == p {
 		return user, nil
 	}
-	return user, errors.New("username or password not matching")
+	return user, errors.New("email or password not matching")
 }
 
 func (m MongoDB) AuthUser(auth *sessions.Session) (User, error) {

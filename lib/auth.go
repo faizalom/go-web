@@ -21,10 +21,10 @@ func Auth(r *http.Request) (*sessions.Session, error) {
 func SetAuth(w http.ResponseWriter, r *http.Request) error {
 	auth, _ := Auth(r)
 
-	username := r.FormValue("username")
+	email := r.FormValue("email")
 	password := r.FormValue("password")
 
-	user, err := MDB.Login(username, password)
+	user, err := MDB.Login(email, password)
 	if err != nil {
 		return err
 	}
@@ -33,7 +33,6 @@ func SetAuth(w http.ResponseWriter, r *http.Request) error {
 	auth.Values["authenticated"] = true
 	auth.Values["user_id"] = user.ID.Hex()
 	auth.Save(r, w)
-
 	return nil
 }
 
