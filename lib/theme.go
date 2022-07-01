@@ -23,6 +23,12 @@ type ThemeStruct struct {
 
 func (t ThemeStruct) ExeTemp(w http.ResponseWriter, r *http.Request, templateFile string, data interface{}) {
 
+	session := FlashSession(r)
+	session.Options.MaxAge = -1
+	session.Save(r, w)
+
+	flash := make(map[string]interface{})
+	flash["error"] = session.Flashes("error")
 	jsonB, err := json.Marshal(t.SideMenu)
 	if err != nil {
 		log.Println(err)
@@ -31,12 +37,14 @@ func (t ThemeStruct) ExeTemp(w http.ResponseWriter, r *http.Request, templateFil
 
 	var res = struct {
 		Title       string
+		Flash       map[string]interface{}
 		Menu        []Navlink
 		MenuJson    string
 		CurrentPath string
 		Data        interface{}
 	}{
 		t.Title,
+		flash,
 		t.SideMenu,
 		navlinkJson,
 		r.URL.Path,

@@ -82,7 +82,9 @@
                 <input type="password" class="form-control" id="floatingPassword" placeholder="Password" name="password">
                 <label for="floatingPassword">Password</label>
             </div>
-
+            {{ range $key, $value := .Flash.error }}
+            <div class="alert alert-danger" role="alert">{{ $value }}</div>
+            {{ end }}
             <div class="checkbox mb-3">
                 <label>
                     <input type="checkbox" value="remember-me"> Remember me

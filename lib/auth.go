@@ -36,8 +36,8 @@ func SetAuth(w http.ResponseWriter, r *http.Request) error {
 	return nil
 }
 
-func Session(r *http.Request) *sessions.Session {
-	session, e := Store.Get(r, "session")
+func FlashSession(r *http.Request) *sessions.Session {
+	session, e := Store.Get(r, "flash")
 	if e != nil {
 		log.Println(e)
 	}

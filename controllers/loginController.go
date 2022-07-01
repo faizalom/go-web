@@ -18,7 +18,7 @@ func LoginIndexContoller(w http.ResponseWriter, r *http.Request, _ httprouter.Pa
 func LoginSubmitContoller(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
 	err := lib.SetAuth(w, r)
 	if err != nil {
-		session := lib.Session(r)
+		session := lib.FlashSession(r)
 		session.AddFlash(fmt.Sprintln(err), "error")
 		session.Save(r, w)
 		http.Redirect(w, r, "/login", http.StatusSeeOther)
