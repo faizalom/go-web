@@ -5,7 +5,7 @@ var DBUrl = "mongodb+srv://faizalom:Faiare123@cluster0.urcqt.mongodb.net/next_de
 var PublicPath = "public"
 
 var ThemePath = "resources/templates/"
-var ThemeView = "resources/view/"
+var ThemeView = "resources/views/"
 
 var AccessLogFile = "logs/access.log"
 var ErrorLogFile = "logs/error.log"
