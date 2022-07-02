@@ -16,5 +16,5 @@ import (
 
 func main() {
 	lib.LogErrors(config.ErrorLogFile)
-	log.Fatal(http.ListenAndServe(":80", middleware.RequestLogger(routers.SetRoutes())))
+	log.Fatal(http.ListenAndServe(":8080", middleware.RequestLogger(routers.SetRoutes())))
 }

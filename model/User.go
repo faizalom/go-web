@@ -18,7 +18,6 @@ type User struct {
 	FirstName    string             `json:"firstName" bson:"firstName"`
 	LastName     string             `json:"lastName" bson:"lastName"`
 	Email        string             `json:"email" bson:"email"`
-	AllowLogin   bool               `json:"allow_login" bson:"allow_login"`
 	Username     string             `json:"username" bson:"username"`
 	Password     string             `json:"password" bson:"password"`
 	Mobile       string             `json:"mobile" bson:"mobile"`
@@ -34,8 +33,8 @@ type User struct {
 }
 
 func (m MongoDB) UserModel() *mongo.Collection {
-	//return m.Database.Collection("staff")
-	return m.Database.Collection("users")
+	return m.Database.Collection("staff")
+	//return m.Database.Collection("users")
 }
 
 func (m MongoDB) Login(u string, p string) (User, error) {

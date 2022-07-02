@@ -6,6 +6,7 @@ import (
 	"os"
 
 	"github.com/faizalom/go-web/config"
+	"github.com/julienschmidt/httprouter"
 )
 
 func RequestLogger(targetMux http.Handler) http.Handler {
@@ -31,4 +32,8 @@ func AccessLog(r *http.Request) {
 		r.RemoteAddr,
 		r.RequestURI,
 	)
+}
+
+func redirectToLogin(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
+	http.Redirect(w, r, "/login", http.StatusSeeOther)
 }
