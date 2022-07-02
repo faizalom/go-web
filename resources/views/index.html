@@ -1,8 +1,9 @@
-{{template "main"}}
+{{template "main" .}}
 
 {{define "content"}}
 <div class="mt-4 p-5 bg-secondary bg-gradient text-white rounded">
-    <h1>Go-Web</h1>
-    <p>Welcome to Go-Web</p>
+    <h1>Hi {{ .AuthUser.FirstName }} {{ .AuthUser.LastName }},</h1>
+    <hr />
+    <h3>Welcome to Go-Web</h3>
 </div>
 {{end}}

@@ -3,6 +3,7 @@ package routers
 import (
 	"net/http"
 
+	"github.com/faizalom/go-web/config"
 	"github.com/faizalom/go-web/controllers"
 	"github.com/faizalom/go-web/middleware"
 	"github.com/julienschmidt/httprouter"
@@ -10,10 +11,10 @@ import (
 
 func SetRoutes() *httprouter.Router {
 	router := httprouter.New()
-	router.ServeFiles("/public/*filepath", http.Dir("public"))
+	router.ServeFiles("/public/*filepath", http.Dir(config.PublicPath))
 
-	router.GET("/", middleware.AuthMiddleware(controllers.IndexContoller))
-	router.GET("/login", controllers.LoginIndexContoller)
-	router.POST("/login", controllers.LoginSubmitContoller)
+	router.GET("/", middleware.AuthMiddleware(controllers.IndexController))
+	router.GET("/login", controllers.LoginIndexController)
+	router.POST("/login", controllers.LoginSubmitController)
 	return router
 }

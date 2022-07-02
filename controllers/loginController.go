@@ -4,18 +4,17 @@ import (
 	"fmt"
 	"net/http"
 
-	"github.com/faizalom/go-web/config"
 	"github.com/faizalom/go-web/lib"
 	"github.com/julienschmidt/httprouter"
 )
 
-func LoginIndexContoller(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
-	t := config.MyTheme
-	t.Title = "Login"
-	t.ExeTemp(w, r, "resources/views/login.html", nil)
+func LoginIndexController(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
+	app := lib.GetApp(w, r)
+	app.Title = "Login"
+	app.ExeTemp(w, r, "resources/views/login.html", nil)
 }
 
-func LoginSubmitContoller(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
+func LoginSubmitController(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
 	err := lib.SetAuth(w, r)
 	if err != nil {
 		session := lib.FlashSession(r)

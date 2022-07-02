@@ -63,7 +63,7 @@ func (m MongoDB) Login(u string, p string) (User, error) {
 	return user, errors.New("email or password not matching")
 }
 
-func (m MongoDB) AuthUser(auth *sessions.Session) (User, error) {
+func (m MongoDB) GetAuthUser(auth *sessions.Session) (User, error) {
 	hexString := fmt.Sprintf("%v", auth.Values["user_id"])
 	objID, err := primitive.ObjectIDFromHex(hexString)
 	if err != nil {

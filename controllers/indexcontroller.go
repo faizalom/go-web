@@ -3,12 +3,12 @@ package controllers
 import (
 	"net/http"
 
-	"github.com/faizalom/go-web/config"
+	"github.com/faizalom/go-web/lib"
 	"github.com/julienschmidt/httprouter"
 )
 
-func IndexContoller(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
-	t := config.MyTheme
-	t.Title = "Wow Works"
-	t.ExeTemp(w, r, "resources/views/index.html", nil)
+func IndexController(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
+	app := lib.GetApp(w, r)
+	app.Title = "Dashboard"
+	app.ExeTemp(w, r, "resources/views/index.html", nil)
 }
