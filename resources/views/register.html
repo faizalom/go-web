@@ -67,30 +67,39 @@
     <link href="/public/assets/signin.css" rel="stylesheet">
 </head>
 
-<body class="text-center">
-    <main class="form-signin w-100 m-auto">
-        <form method="post">
-            <img class="mb-4" src="https://upload.wikimedia.org/wikipedia/commons/0/05/Go_Logo_Blue.svg" alt="Gopher" width="200">
-            <h1 class="h3 mb-3 fw-normal">Please sign in</h1>
-
-            <div class="form-floating">
-                <input type="email" class="form-control" id="floatingInput" placeholder="name@example.com" name="email" value="Theresa_Jacobi73@example.org">
-                <label for="floatingInput">Email address</label>
+<body>
+    <main class="w-100 m-auto">
+        <form class="container" method="post">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="card-title">Register New User</h5>
+                </div>
+                <div class="card-body">
+                    <div class="mb-3">
+                        <label for="exampleInputEmail1" class="form-label">First Name</label>
+                        <input type="text" class="form-control" id="exampleInputEmail1" autocomplete="given-name">
+                    </div>
+                    <div class="mb-3">
+                        <label for="exampleInputPassword1" class="form-label">Last Name</label>
+                        <input type="text" class="form-control" id="exampleInputPassword1" autocomplete="family-name">
+                    </div>
+                    <div class="mb-3">
+                        <label for="exampleInputEmail1" class="form-label">Email address</label>
+                        <input type="email" class="form-control" id="exampleInputEmail1" autocomplete="email">
+                    </div>
+                    <div class="mb-3">
+                        <label for="exampleInputPassword1" class="form-label">Password</label>
+                        <input type="password" class="form-control" id="exampleInputPassword1" autocomplete="new-password">
+                    </div>
+                    <div class="mb-3">
+                        <label for="exampleInputPassword1" class="form-label">Re-Password</label>
+                        <input type="password" class="form-control" id="exampleInputPassword1" autocomplete="new-password">
+                    </div>
+                </div>
+                <div class="card-footer">
+                    <button type="submit" class="btn btn-primary float-end">Register</button>
+                </div>
             </div>
-            <div class="form-floating">
-                <input type="password" class="form-control" id="floatingPassword" placeholder="Password" name="password" value="Test1234">
-                <label for="floatingPassword">Password</label>
-            </div>
-            {{ range $key, $value := .Flash.error }}
-            <div class="alert alert-danger" role="alert">{{ $value }}</div>
-            {{ end }}
-            <div class="checkbox mb-3">
-                <label>
-                    <input type="checkbox" value="remember-me"> Remember me
-                </label>
-            </div>
-            <button class="w-100 btn btn-lg btn-primary" type="submit">Sign in</button>
-            <p class="mt-5 mb-3 text-muted">&copy; 2017–2022</p>
         </form>
     </main>
 </body>

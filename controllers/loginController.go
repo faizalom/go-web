@@ -25,3 +25,9 @@ func LoginSubmitController(w http.ResponseWriter, r *http.Request, _ httprouter.
 	}
 	http.Redirect(w, r, "/", http.StatusSeeOther)
 }
+
+func RegisterController(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
+	app := lib.GetApp(w, r)
+	app.Title = "Register"
+	app.ExeTemp(w, r, "resources/views/register.html", nil)
+}

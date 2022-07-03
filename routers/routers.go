@@ -16,5 +16,6 @@ func SetRoutes() *httprouter.Router {
 	router.GET("/", middleware.AuthMiddleware(controllers.IndexController))
 	router.GET("/login", controllers.LoginIndexController)
 	router.POST("/login", controllers.LoginSubmitController)
+	router.GET("/register", controllers.RegisterController)
 	return router
 }
