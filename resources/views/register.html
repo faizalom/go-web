@@ -70,31 +70,37 @@
 <body>
     <main class="w-100 m-auto">
         <form class="container" method="post">
+            <div class="text-center">
+                <img class="mb-4" src="https://upload.wikimedia.org/wikipedia/commons/0/05/Go_Logo_Blue.svg" alt="Gopher" width="200">
+            </div>
             <div class="card">
                 <div class="card-header">
                     <h5 class="card-title">Register New User</h5>
                 </div>
                 <div class="card-body">
                     <div class="mb-3">
-                        <label for="exampleInputEmail1" class="form-label">First Name</label>
-                        <input type="text" class="form-control" id="exampleInputEmail1" autocomplete="given-name">
+                        <label for="first-name" class="form-label">First Name</label>
+                        <input type="text" class="form-control" id="first-name" autocomplete="given-name" name="first_name">
                     </div>
                     <div class="mb-3">
-                        <label for="exampleInputPassword1" class="form-label">Last Name</label>
-                        <input type="text" class="form-control" id="exampleInputPassword1" autocomplete="family-name">
+                        <label for="last-name" class="form-label">Last Name</label>
+                        <input type="text" class="form-control" id="last-name" autocomplete="family-name" name="last_name">
                     </div>
                     <div class="mb-3">
-                        <label for="exampleInputEmail1" class="form-label">Email address</label>
-                        <input type="email" class="form-control" id="exampleInputEmail1" autocomplete="email">
+                        <label for="email" class="form-label">Email address</label>
+                        <input type="email" class="form-control" id="email" autocomplete="email" name="email">
                     </div>
                     <div class="mb-3">
-                        <label for="exampleInputPassword1" class="form-label">Password</label>
-                        <input type="password" class="form-control" id="exampleInputPassword1" autocomplete="new-password">
+                        <label for="password" class="form-label">Password</label>
+                        <input type="password" class="form-control" id="password" autocomplete="new-password" name="password">
                     </div>
                     <div class="mb-3">
-                        <label for="exampleInputPassword1" class="form-label">Re-Password</label>
-                        <input type="password" class="form-control" id="exampleInputPassword1" autocomplete="new-password">
+                        <label for="re-password" class="form-label">Re-Password</label>
+                        <input type="password" class="form-control" id="re-password" autocomplete="new-password" name="re_password">
                     </div>
+                    {{ range $key, $value := .Flash.error }}
+                    <div class="alert alert-danger" role="alert">{{ $value }}</div>
+                    {{ end }}
                 </div>
                 <div class="card-footer">
                     <button type="submit" class="btn btn-primary float-end">Register</button>

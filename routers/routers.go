@@ -17,5 +17,6 @@ func SetRoutes() *httprouter.Router {
 	router.GET("/login", controllers.LoginIndexController)
 	router.POST("/login", controllers.LoginSubmitController)
 	router.GET("/register", controllers.RegisterController)
+	router.POST("/register", controllers.RegisterSubmitController)
 	return router
 }
