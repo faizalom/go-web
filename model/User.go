@@ -10,6 +10,7 @@ import (
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo"
+	"golang.org/x/crypto/bcrypt"
 )
 
 type User struct {
@@ -39,27 +40,18 @@ func (m MongoDB) UserModel() *mongo.Collection {
 
 func (m MongoDB) Login(u string, p string) (User, error) {
 	var user User
-
-	//opts := options.FindOne().SetSort(bson.M{"username": 1})
-	//e := m.UserModel().FindOne(context.TODO(), bson.M{"username": u}, opts).Decode(&user)
-	// if e == nil {
-	// 	e := bcrypt.CompareHashAndPassword([]byte(user.Password), []byte(p))
-	// 	if e == nil {
-	// 		return user, nil
-	// 	}
-	// }
-
 	e := m.UserModel().FindOne(context.Background(), bson.M{"email": u}).Decode(&user)
-	if e != nil {
-		// ErrNoDocuments means that the filter did not match any documents in the collection
-		if e == mongo.ErrNoDocuments {
-			return user, errors.New("email or password not matching")
+	if e == nil {
+		e := bcrypt.CompareHashAndPassword([]byte(user.Password), []byte(p))
+		if e == nil {
+			return user, nil
 		}
-		log.Println(e)
+	} else if e != mongo.ErrNoDocuments {
+		return user, errors.New("unable to fetch data")
 	}
-	if e == nil && user.Password == p {
-		return user, nil
-	}
+
+	log.Println(e)
+	user = User{}
 	return user, errors.New("email or password not matching")
 }
 

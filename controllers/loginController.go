@@ -3,6 +3,7 @@ package controllers
 import (
 	"context"
 	"fmt"
+	"log"
 	"net/http"
 	"regexp"
 	"strings"
@@ -31,6 +32,21 @@ func LoginSubmitController(w http.ResponseWriter, r *http.Request, _ httprouter.
 	http.Redirect(w, r, "/", http.StatusSeeOther)
 }
 
+func LogoutController(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
+	session := lib.FlashSession(r)
+	session.Options.MaxAge = -1
+	session.Save(r, w)
+
+	auth, e := lib.Auth(r)
+	if e != nil {
+		log.Println(e)
+	}
+	auth.Options.MaxAge = -1
+	auth.Save(r, w)
+
+	http.Redirect(w, r, "/login", http.StatusSeeOther)
+}
+
 func RegisterController(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
 	app := lib.GetApp(w, r)
 	app.Title = "Register"
@@ -48,7 +64,11 @@ func RegisterSubmitController(w http.ResponseWriter, r *http.Request, _ httprout
 	user.FirstName = r.FormValue("first_name")
 	user.LastName = r.FormValue("last_name")
 	user.Email = r.FormValue("email")
-	user.Password = r.FormValue("password")
+	password, e := lib.HashPassword(r.FormValue("password"))
+	if e != nil {
+		log.Println(e)
+	}
+	user.Password = password
 
 	opts := options.InsertOne()
 	lib.MDB.UserModel().InsertOne(context.TODO(), user, opts)
