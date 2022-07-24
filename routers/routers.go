@@ -1,7 +1,6 @@
 package routers
 
 import (
-	"fmt"
 	"net/http"
 
 	"github.com/faizalom/go-web/config"
@@ -26,13 +25,9 @@ func SetRoutes() http.Handler {
 	// 	http.ServeFile(w, r, "resources/views/404.html")
 	// })
 
-	router.NotFound = http.HandlerFunc(unauthorizedHandler)
-	router.MethodNotAllowed = http.HandlerFunc(unauthorizedHandler)
+	router.NotFound = http.HandlerFunc(fileNotFoundHandler)
+	router.MethodNotAllowed = http.HandlerFunc(methodNotAllowedHandler)
 
-	CSRF := csrf.Protect([]byte("32-byte-long-auth-key"), csrf.ErrorHandler(router.MethodNotAllowed))
+	CSRF := csrf.Protect([]byte("32-byte-long-auth-key"), csrf.ErrorHandler(http.HandlerFunc(pageExpiredHandler)))
 	return CSRF(router)
-}
-
-func unauthorizedHandler(w http.ResponseWriter, r *http.Request) {
-	http.Error(w, fmt.Sprintf("%s - %s", http.StatusText(http.StatusForbidden), "ewrew"), http.StatusForbidden)
 }
