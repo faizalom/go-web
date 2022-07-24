@@ -1,10 +1,12 @@
 package lib
 
 import (
+	"html/template"
 	"net/http"
 	"strings"
 
 	"github.com/faizalom/go-web/model"
+	"github.com/gorilla/csrf"
 )
 
 func (a AppStruct) ExeTemp(w http.ResponseWriter, r *http.Request, templateFile string, data interface{}) {
@@ -14,12 +16,14 @@ func (a AppStruct) ExeTemp(w http.ResponseWriter, r *http.Request, templateFile 
 		Flash       map[string]interface{}
 		CurrentPath string
 		AuthUser    model.User
+		CsrfField   template.HTML
 		Data        interface{}
 	}{
 		a.Title,
 		a.Flash,
 		r.URL.Path,
 		a.AuthUser,
+		csrf.TemplateField(r),
 		data,
 	}
 
