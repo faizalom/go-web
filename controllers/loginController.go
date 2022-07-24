@@ -14,7 +14,18 @@ import (
 	"go.mongodb.org/mongo-driver/mongo/options"
 )
 
+func clearAuth(w http.ResponseWriter, r *http.Request) {
+	auth, e := lib.Auth(r)
+	if e != nil {
+		log.Println(e)
+	}
+	auth.Options.MaxAge = -1
+	auth.Save(r, w)
+}
+
 func LoginIndexController(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
+	clearAuth(w, r)
+
 	app := lib.GetApp(w, r)
 	app.Title = "Login"
 	app.ExeTemp(w, r, "resources/views/login.html", nil)
@@ -37,13 +48,7 @@ func LogoutController(w http.ResponseWriter, r *http.Request, _ httprouter.Param
 	session.Options.MaxAge = -1
 	session.Save(r, w)
 
-	auth, e := lib.Auth(r)
-	if e != nil {
-		log.Println(e)
-	}
-	auth.Options.MaxAge = -1
-	auth.Save(r, w)
-
+	clearAuth(w, r)
 	http.Redirect(w, r, "/login", http.StatusSeeOther)
 }
 
