@@ -9,8 +9,8 @@ import (
 	"github.com/gorilla/csrf"
 )
 
+// function to run html template
 func (a AppStruct) ExeTemp(w http.ResponseWriter, r *http.Request, templateFile string, data interface{}) {
-
 	var res = struct {
 		Title       string
 		Flash       map[string]interface{}
