@@ -1,9 +1,12 @@
 {{template "main" .}}
 
 {{define "content"}}
-<div class="mt-4 p-5 bg-secondary bg-gradient text-white rounded">
-    <h1>Hi {{ .AuthUser.FirstName }} {{ .AuthUser.LastName }},</h1>
-    <hr />
-    <h3>Welcome to Go-Web</h3>
+<div class="card w-100 mt-5" style="width: 18rem;">
+    <div class="card-body">
+        <h1 class="card-title">Hi {{ .AuthUser.FirstName }} {{ .AuthUser.LastName }},</h1>
+        <h3 class="card-subtitle mb-2 text-muted">Welcome to Go-Web</h3>
+        <a href="#" class="card-link">Card link</a>
+        <a href="#" class="card-link">Another link</a>
+    </div>
 </div>
 {{end}}
