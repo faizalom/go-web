@@ -9,3 +9,10 @@ var ThemeView = "resources/views/"
 
 var AccessLogFile = "logs/access.log"
 var ErrorLogFile = "logs/error.log"
+
+/*
+Encryption Key
+
+key must be 16, 24 or 32 bytes long (AES-128, AES-192 or AES-256)
+*/
+var Cipher = "AES-256-CBC"
