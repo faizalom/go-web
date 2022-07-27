@@ -18,7 +18,16 @@ func Auth(r *http.Request) (*sessions.Session, error) {
 }
 
 func SetAuth(w http.ResponseWriter, r *http.Request) error {
-	auth, _ := Auth(r)
+	auth, e := Auth(r)
+	if e != nil {
+		log.Println(e)
+	}
+	auth.Options = &sessions.Options{
+		Path:     "/",
+		MaxAge:   config.SessionLifetime * 60,
+		Secure:   true,
+		HttpOnly: true, // no websocket or any protocol else
+	}
 
 	email := r.FormValue("email")
 	password := r.FormValue("password")

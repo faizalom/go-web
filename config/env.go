@@ -16,3 +16,11 @@ Encryption Key
 key must be 16, 24 or 32 bytes long (AES-128, AES-192 or AES-256)
 */
 var Cipher = "AES-256-CBC"
+
+/*
+Session Lifetime
+
+Here you may specify the number of minutes that you wish the session
+to be allowed to remain idle before it expires.
+*/
+var SessionLifetime = 30 //minutes
