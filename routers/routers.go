@@ -11,6 +11,12 @@ import (
 	"github.com/julienschmidt/httprouter"
 )
 
+/*
+Web Routes
+
+Here is where you can register web routes for your application.
+Add New Routes inside this function.
+*/
 func SetRoutes() http.Handler {
 	router := httprouter.New()
 	router.ServeFiles("/public/*filepath", http.Dir(config.PublicPath))

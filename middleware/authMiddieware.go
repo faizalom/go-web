@@ -1,4 +1,4 @@
-// Package Middleware
+// Package Middleware handle an incoming request
 package middleware
 
 import (
@@ -8,13 +8,15 @@ import (
 	"github.com/julienschmidt/httprouter"
 )
 
+// User should be redirected to login when they are not authenticated.
 func AuthMiddleware(f func(http.ResponseWriter, *http.Request, httprouter.Params)) func(http.ResponseWriter, *http.Request, httprouter.Params) {
 	return func(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
 		auth, _ := lib.Auth(r)
 		if auth, ok := auth.Values["authenticated"].(bool); !ok || !auth {
 			redirectToLogin(w, r, ps)
 		} else {
-			f(w, r, ps) // original function call
+			// Original function call
+			f(w, r, ps)
 		}
 	}
 }

@@ -9,6 +9,7 @@ import (
 	"github.com/julienschmidt/httprouter"
 )
 
+// This function is run during every request to your application. And Stored into log file
 func RequestLogger(targetMux http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		targetMux.ServeHTTP(w, r)
@@ -16,6 +17,7 @@ func RequestLogger(targetMux http.Handler) http.Handler {
 	})
 }
 
+// Log file store function
 func AccessLog(r *http.Request) {
 	l := log.New(log.Writer(), log.Prefix(), log.Flags())
 
