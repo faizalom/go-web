@@ -6,6 +6,7 @@ import (
 	"github.com/faizalom/go-web/lib"
 )
 
+// This function is run user enters invalid url
 func fileNotFoundHandler(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(http.StatusNotFound)
 
@@ -20,6 +21,7 @@ func fileNotFoundHandler(w http.ResponseWriter, r *http.Request) {
 	app.ExeTemp(w, r, "resources/views/error.html", data)
 }
 
+// This function is run user sends a wrong method
 func methodNotAllowedHandler(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(http.StatusNotFound)
 
@@ -34,6 +36,7 @@ func methodNotAllowedHandler(w http.ResponseWriter, r *http.Request) {
 	app.ExeTemp(w, r, "resources/views/error.html", data)
 }
 
+// This function is run during the CSRF token expired
 func pageExpiredHandler(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(http.StatusNotFound)
 

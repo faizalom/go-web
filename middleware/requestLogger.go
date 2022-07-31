@@ -9,7 +9,7 @@ import (
 	"github.com/julienschmidt/httprouter"
 )
 
-// This function is run during every request to your application. And Stored into log file
+// This function is run during every request to your application. And stored in a log file
 func RequestLogger(targetMux http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		targetMux.ServeHTTP(w, r)
@@ -36,6 +36,9 @@ func AccessLog(r *http.Request) {
 	)
 }
 
+// This function is called from AuthMiddleware
+// This will run at user tries to access auth routes with invalid or Expired auth session or without login
+// User can use this fucntion in controllers
 func redirectToLogin(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
 	http.Redirect(w, r, "/login", http.StatusSeeOther)
 }
