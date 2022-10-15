@@ -23,7 +23,7 @@ func main() {
 	// Start a web server
 	// Set your listening port here
 	// Port :80 for http://
-	log.Fatal(http.ListenAndServe(":443", middleware.RequestLogger(routers.SetRoutes())))
+	log.Fatal(http.ListenAndServe(":8080", middleware.RequestLogger(routers.SetRoutes())))
 
 	// To use ssl(https://) use this
 	// Need certfile and keyfile to run this
