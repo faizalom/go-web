@@ -1,0 +1,50 @@
+{{template "main" .}}
+
+{{define "content"}}
+<main class="form-signin w-100 m-auto text-center">
+    <h2 id="username">Please Wait</h2>
+    <a href="/profile" disabled class="w-100 btn btn-lg btn-primary">Edit Profile</a>
+    <button class="w-100 btn btn-lg btn-primary mt-2" id="btn-logout">Logout</button>
+</main>
+{{end}}
+
+{{define "script"}}
+<script>
+    if (localStorage.getItem('session_token') == null) {
+        window.location.replace("/login");
+    }
+
+    $.ajax({
+        url: "/api/profile",
+        method: "GET",
+        dataType: "json",
+        beforeSend: function (xhr) {
+            xhr.setRequestHeader("Authorization", "Bearer " + localStorage.getItem('session_token'));
+        },
+    }).done(function (res) {
+        $('#username').text(res.first_name + ' ' + res.last_name)
+    }).fail(function (jqXHR, exception) {
+        if (jqXHR.status == 401) {
+            localStorage.clear()
+            window.location.replace("/login");
+        }
+    })
+
+    $('#btn-logout').click(function (e) {
+        e.preventDefault();
+
+        $.ajax({
+            url: "/api/logout",
+            method: "GET",
+            dataType: 'json',
+            contentType: 'application/json',
+            beforeSend: function (xhr) {
+                xhr.setRequestHeader("Authorization", "Bearer " + localStorage.getItem('session_token'));
+            },
+        }).always(function () {
+            localStorage.clear()
+            window.location.replace("/login");
+        });
+    });
+</script>
+{{end}}

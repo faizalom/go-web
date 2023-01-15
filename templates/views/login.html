@@ -1,0 +1,64 @@
+{{template "main" .}}
+
+{{define "content"}}
+<main class="form-signin w-100 m-auto text-center">
+    <form method="post" id="login-form">
+        <img class="mb-4" src="https://upload.wikimedia.org/wikipedia/commons/0/05/Go_Logo_Blue.svg" alt="Gopher"
+            width="200">
+        <h1 class="h3 mb-3 fw-normal">Please sign in</h1>
+
+        <div class="form-floating">
+            <input type="email" class="form-control" id="username" placeholder="name@example.com" name="email" required>
+            <label for="username">Email address</label>
+        </div>
+        <div class="form-floating">
+            <input type="password" class="form-control" id="password" placeholder="Password" name="password" required>
+            <label for="password">Password</label>
+        </div>
+        <div class="alert alert-danger d-none" role="alert" id="div-error"></div>
+        <button class="w-100 btn btn-lg btn-primary" type="submit">Sign in</button>
+        <a class="btn btn-outline-primary w-100 mt-2" href="{{ .google_login_url }}" role="button"
+            style="text-transform:none">
+            <img width="20px" style="margin-bottom:3px; margin-right:5px" alt="Google sign-in"
+                src="https://upload.wikimedia.org/wikipedia/commons/thumb/5/53/Google_%22G%22_Logo.svg/512px-Google_%22G%22_Logo.svg.png" />
+            Login with Google
+        </a>
+        <div class="text-start mt-2">
+            <a href="/register" class="float-end">Register</a>
+        </div>
+    </form>
+</main>
+{{end}}
+
+{{define "script"}}
+<script>
+    if (localStorage.getItem('session_token') != null) {
+        window.location.replace("/");
+    }
+
+    $('#login-form').submit(function (e) {
+        e.preventDefault();
+
+        var username = $('#username').val();
+        var password = $('#password').val();
+        $('input,button').prop('disabled', true);
+        $('#div-error').text("").addClass('d-none');
+
+        $.ajax({
+            url: "/api/login",
+            method: "POST",
+            dataType: "json",
+            beforeSend: function (xhr) {
+                xhr.setRequestHeader("Authorization", "Basic " + btoa(username + ":" + password));
+            },
+        }).done(function (res) {
+            localStorage.setItem("session_token", res.token);
+            window.location.replace("/");
+        }).fail(function (jqXHR, exception) {
+            $('#div-error').text(jqXHR.responseJSON.message).removeClass('d-none');
+        }).always(function () {
+            $('input,button').prop('disabled', false);
+        });
+    });
+</script>
+{{end}}
