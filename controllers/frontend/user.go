@@ -3,12 +3,11 @@ package frontend
 import (
 	"net/http"
 
-	"github.com/faizalom/go-web/config"
+	"github.com/faizalom/go-web/lib"
 
 	"github.com/julienschmidt/httprouter"
 )
 
 func Dashboard(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
-	Template.ParseFiles(config.ThemePath + "/views/dashboard.html")
-	Template.ExecuteTemplate(w, "dashboard.html", nil)
+	lib.ExeTemplate(w, "/views/dashboard.html", nil)
 }

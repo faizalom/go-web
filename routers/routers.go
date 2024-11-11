@@ -5,6 +5,7 @@ import (
 	"net/http"
 
 	"github.com/faizalom/go-web/config"
+
 	"github.com/julienschmidt/httprouter"
 )
 
@@ -26,5 +27,5 @@ func SetRoutes() http.Handler {
 	router.NotFound = http.HandlerFunc(fileNotFoundHandler)
 	router.MethodNotAllowed = http.HandlerFunc(methodNotAllowedHandler)
 
-	return router
+	return CSRFRoute(router)
 }

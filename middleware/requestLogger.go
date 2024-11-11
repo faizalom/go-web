@@ -11,8 +11,14 @@ import (
 // This function is run during every request to your application. And stored in a log file
 func RequestLogger(targetMux http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		defer func(w http.ResponseWriter, r *http.Request) {
+			if rec := recover(); rec != nil {
+				log.Println(r.URL.Path, rec)
+				http.Error(w, rec.(error).Error(), http.StatusInternalServerError)
+			}
+		}(w, r)
+		go AccessLog(r)
 		targetMux.ServeHTTP(w, r)
-		AccessLog(r)
 	})
 }
 

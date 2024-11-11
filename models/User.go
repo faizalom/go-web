@@ -10,6 +10,7 @@ import (
 	"golang.org/x/exp/constraints"
 )
 
+// Creating a generic type
 type Number interface {
 	constraints.Integer | constraints.Float
 }
@@ -96,6 +97,7 @@ func Login(email string, password string) (int64, error) {
 	return id, err
 }
 
+// Generic function
 func GetUserById[T Number](id T) (User, error) {
 	var user User
 	err := Conn().QueryRow("SELECT id, first_name, last_name, email FROM `users` WHERE `id` = ?", id).Scan(&user.ID, &user.FirstName, &user.LastName, &user.Email)

@@ -12,23 +12,23 @@
 <script>
     if (localStorage.getItem('session_token') == null) {
         window.location.replace("/login");
+    } else {
+        $.ajax({
+            url: "/api/profile",
+            method: "GET",
+            dataType: "json",
+            beforeSend: function (xhr) {
+                xhr.setRequestHeader("Authorization", "Bearer " + localStorage.getItem('session_token'));
+            },
+        }).done(function (res) {
+            $('#username').text(res.first_name + ' ' + res.last_name)
+        }).fail(function (jqXHR, exception) {
+            if (jqXHR.status == 401) {
+                localStorage.clear()
+                window.location.replace("/login");
+            }
+        })
     }
-
-    $.ajax({
-        url: "/api/profile",
-        method: "GET",
-        dataType: "json",
-        beforeSend: function (xhr) {
-            xhr.setRequestHeader("Authorization", "Bearer " + localStorage.getItem('session_token'));
-        },
-    }).done(function (res) {
-        $('#username').text(res.first_name + ' ' + res.last_name)
-    }).fail(function (jqXHR, exception) {
-        if (jqXHR.status == 401) {
-            localStorage.clear()
-            window.location.replace("/login");
-        }
-    })
 
     $('#btn-logout').click(function (e) {
         e.preventDefault();

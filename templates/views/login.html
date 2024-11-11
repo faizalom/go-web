@@ -34,31 +34,31 @@
 <script>
     if (localStorage.getItem('session_token') != null) {
         window.location.replace("/");
-    }
+    } else {
+        $('#login-form').submit(function (e) {
+            e.preventDefault();
 
-    $('#login-form').submit(function (e) {
-        e.preventDefault();
+            var username = $('#username').val();
+            var password = $('#password').val();
+            $('input,button').prop('disabled', true);
+            $('#div-error').text("").addClass('d-none');
 
-        var username = $('#username').val();
-        var password = $('#password').val();
-        $('input,button').prop('disabled', true);
-        $('#div-error').text("").addClass('d-none');
-
-        $.ajax({
-            url: "/api/login",
-            method: "POST",
-            dataType: "json",
-            beforeSend: function (xhr) {
-                xhr.setRequestHeader("Authorization", "Basic " + btoa(username + ":" + password));
-            },
-        }).done(function (res) {
-            localStorage.setItem("session_token", res.token);
-            window.location.replace("/");
-        }).fail(function (jqXHR, exception) {
-            $('#div-error').text(jqXHR.responseJSON.message).removeClass('d-none');
-        }).always(function () {
-            $('input,button').prop('disabled', false);
+            $.ajax({
+                url: "/api/login",
+                method: "POST",
+                dataType: "json",
+                beforeSend: function (xhr) {
+                    xhr.setRequestHeader("Authorization", "Basic " + btoa(username + ":" + password));
+                },
+            }).done(function (res) {
+                localStorage.setItem("session_token", res.token);
+                window.location.replace("/");
+            }).fail(function (jqXHR, exception) {
+                $('#div-error').text(jqXHR.responseJSON.message).removeClass('d-none');
+            }).always(function () {
+                $('input,button').prop('disabled', false);
+            });
         });
-    });
+    }
 </script>
 {{end}}
