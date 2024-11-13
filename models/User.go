@@ -69,7 +69,7 @@ func InsertUserWithDetails(user User) (int64, error) {
 }
 
 func IsEmailExists(email string) (bool, error) {
-	cnt, err := Count(Conn(), "SELECT COUNT(*) FROM `users` WHERE `email` = ?", email)
+	cnt, err := Count(Conn(), "SELECT COUNT(*) FROM users WHERE email = ?", email)
 	if cnt == 0 {
 		return false, err
 	}
@@ -79,7 +79,7 @@ func IsEmailExists(email string) (bool, error) {
 func Login(email string, password string) (int64, error) {
 	var id int64
 	var passwordHash string
-	err := Conn().QueryRow("SELECT id, password FROM `users` WHERE `google_Id` IS NULL AND `email` = ?", email).Scan(&id, &passwordHash)
+	err := Conn().QueryRow("SELECT id, password FROM users WHERE google_Id IS NULL AND email = ?", email).Scan(&id, &passwordHash)
 	if err == sql.ErrNoRows {
 		return 0, err
 	} else if err != nil {
@@ -100,7 +100,7 @@ func Login(email string, password string) (int64, error) {
 // Generic function
 func GetUserById[T Number](id T) (User, error) {
 	var user User
-	err := Conn().QueryRow("SELECT id, first_name, last_name, email FROM `users` WHERE `id` = ?", id).Scan(&user.ID, &user.FirstName, &user.LastName, &user.Email)
+	err := Conn().QueryRow("SELECT id, first_name, last_name, email FROM users WHERE id = ?", id).Scan(&user.ID, &user.FirstName, &user.LastName, &user.Email)
 	if err == sql.ErrNoRows {
 		return user, nil
 	} else if err != nil {

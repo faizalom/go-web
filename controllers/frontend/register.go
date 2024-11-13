@@ -4,14 +4,13 @@ import (
 	"net/http"
 
 	"github.com/faizalom/go-web/lib"
-
-	"github.com/julienschmidt/httprouter"
 )
 
-func Register(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
-	lib.ExeTemplate(w, "/views/register.html", H{"title": "Register", "google_register_url": "lib.GoogleRegisterURL"})
+func Register(w http.ResponseWriter, r *http.Request) {
+	lib.ExeTemplate(w, "register.html", H{"title": "Register", "google_register_url": "lib.GoogleRegisterURL"})
 }
 
-func CompleteRegister(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
-	lib.ExeTemplate(w, "/views/registered.html", H{"title": "Register"})
+func CompleteRegister(w http.ResponseWriter, r *http.Request) {
+	jwtToken := r.PathValue("jwtToken")
+	lib.ExeTemplate(w, "registered.html", H{"title": "Register", "jwtToken": jwtToken})
 }

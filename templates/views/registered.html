@@ -1,24 +1,24 @@
-{{template "main" .}}
-
-{{define "content"}}
+{{template "htmlopen" .}}
 <main class="w-100 m-auto text-center container">
     <img class="mb-4" src="https://upload.wikimedia.org/wikipedia/commons/0/05/Go_Logo_Blue.svg" alt="Gopher"
         width="200">
     <h1 class="display-5">Registrating Please wait...</h1>
     <div class="alert alert-danger d-none" role="alert" id="div-error"></div>
 </main>
-{{end}}
+{{template "jsscript"}}
+{{template "registered_script" .}}
+{{template "htmlclose"}}
 
-{{define "script"}}
+{{define "registered_script"}}
 <script>
     $.ajax({
-        url: "/api/" + window.location.pathname,
+        url: "/api/register/{{.jwtToken}}",
         method: "GET",
     }).done(function (res) {
         localStorage.setItem("session_token", res.token);
         window.location.replace("/profile");
     }).fail(function (jqXHR, exception) {
-        $('.display-5').addClass('text-danger').text(jqXHR.responseJSON.message).removeClass('d-none');
+        $('.display-5').addClass('text-danger').text(jqXHR?.responseJSON?.message).removeClass('d-none');
     }).always(function () {
         $('input,button').prop('disabled', false);
     });

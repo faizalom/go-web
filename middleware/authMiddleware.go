@@ -8,12 +8,11 @@ import (
 
 	"github.com/faizalom/go-web/lib"
 	"github.com/faizalom/go-web/models"
-	"github.com/julienschmidt/httprouter"
 )
 
 // Users should be redirected to log in when they are not authenticated
-func ApiAuthMiddleware(f func(http.ResponseWriter, *http.Request, httprouter.Params, models.User)) func(http.ResponseWriter, *http.Request, httprouter.Params) {
-	return func(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
+func ApiAuthMiddleware(f func(http.ResponseWriter, *http.Request, models.User)) func(http.ResponseWriter, *http.Request) {
+	return func(w http.ResponseWriter, r *http.Request) {
 		if r.Header.Get("Authorization") == "" {
 			lib.Error(w, http.StatusUnauthorized, "Token not available")
 			return
@@ -43,7 +42,7 @@ func ApiAuthMiddleware(f func(http.ResponseWriter, *http.Request, httprouter.Par
 			if auth.ID == 0 {
 				lib.Error(w, http.StatusUnauthorized, "User not found")
 			} else {
-				f(w, r, ps, auth)
+				f(w, r, auth)
 			}
 		} else {
 			lib.Error(w, http.StatusInternalServerError, "Internal Server Error")

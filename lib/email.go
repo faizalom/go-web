@@ -35,7 +35,7 @@ func SendRegisterMail(data map[string]any, to ...string) *mail.Email {
 	email.SetSubject("Please complete you registration process")
 
 	var tpl bytes.Buffer
-	t := template.Must(template.New("registration.html").ParseFiles(config.ThemePath + "/email/registration.html"))
+	t := template.Must(template.New("email_registration.html").ParseGlob(config.ThemePath))
 	err := t.Execute(&tpl, data)
 	if err != nil {
 		log.Println(err)

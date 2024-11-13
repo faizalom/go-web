@@ -1,6 +1,4 @@
-{{template "main" .}}
-
-{{define "content"}}
+{{template "htmlopen" .}}
 <main class="form-signin w-100 m-auto text-center">
     <form method="post" id="login-form">
         <img class="mb-4" src="https://upload.wikimedia.org/wikipedia/commons/0/05/Go_Logo_Blue.svg" alt="Gopher"
@@ -28,18 +26,21 @@
         </div>
     </form>
 </main>
-{{end}}
+{{template "jsscript"}}
+{{template "login_script"}}
+{{template "htmlclose"}}
 
-{{define "script"}}
+{{define "login_script"}}
 <script>
     if (localStorage.getItem('session_token') != null) {
         window.location.replace("/");
     } else {
-        $('#login-form').submit(function (e) {
+        const form = document.getElementById("login-form");
+        form.addEventListener("submit", function (e) {
             e.preventDefault();
 
-            var username = $('#username').val();
-            var password = $('#password').val();
+            var username = document.getElementById("username").value;
+            var password = document.getElementById("password").value;
             $('input,button').prop('disabled', true);
             $('#div-error').text("").addClass('d-none');
 
@@ -54,7 +55,7 @@
                 localStorage.setItem("session_token", res.token);
                 window.location.replace("/");
             }).fail(function (jqXHR, exception) {
-                $('#div-error').text(jqXHR.responseJSON.message).removeClass('d-none');
+                $('#div-error').text(jqXHR?.responseJSON?.message ?? "Server Error").removeClass('d-none');
             }).always(function () {
                 $('input,button').prop('disabled', false);
             });
