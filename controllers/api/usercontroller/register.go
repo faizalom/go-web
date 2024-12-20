@@ -74,7 +74,7 @@ func Register(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 		// To avoid hacker to insert multi records in DB. User needs to confirm his email
-		data := map[string]any{"registration_link": config.ServerURL + "/register/" + token}
+		data := map[string]any{"registration_link": config.Server.URL + "/register/" + token}
 		lib.Mail(lib.SendRegisterMail(data, request.Email))
 	}()
 	lib.Success(w, H{"message": "Confirmation link send to " + request.Email + ". Please complete registration by clicking the link"})
