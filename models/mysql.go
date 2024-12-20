@@ -11,8 +11,8 @@ import (
 )
 
 func Conn() *sql.DB {
-	db, err := sql.Open("mysql", config.DBURL)
-	// db, err := sql.Open("postgres", config.DBURL)
+	db, err := sql.Open("mysql", config.DB.URL)
+	// db, err := sql.Open("postgres", config.DB.URL)
 	if err != nil {
 		panic(err.Error())
 	}
