@@ -19,7 +19,7 @@ import (
 // }
 
 func defaultRoutes(mux *http.ServeMux) {
-	mux.Handle("GET /", http.FileServer(http.Dir(config.PublicPath)))
+	mux.Handle("GET /", http.FileServer(http.Dir(config.Path.Public)))
 
 	mux.HandleFunc("/", fileNotFoundHandler)
 	mux.HandleFunc("POST /", func(w http.ResponseWriter, r *http.Request) {
