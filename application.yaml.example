@@ -1,0 +1,43 @@
+server:
+  # host: 0.0.0.0 # to override use SERVER_HOST='127.0.0.1' environment variable
+  port: :8082 # to override use SERVER_PORT=3000 environment variable
+  url: http://localhost:8082
+  # env: prod # to override use SERVER_ENV='dev' environment variable
+  # name: bes-asset-query # to override use SERVER_NAME='bes-asset-query' environment variable
+
+db:
+  driver: mysql
+  url: username:password@tcp(127.0.0.1:3306)/db_name
+
+# possible log levels are debug, info, warn, error, panic
+logfile:
+  access-log: logs/access.log
+  error-log: logs/error.log
+
+# Encryption Key
+# ==============
+# key must be 16, 24 or 32 bytes long (AES-128, AES-192 or AES-256)
+cipherkey: AES-256-CBC
+
+# Session Lifetime
+# ================
+# Here you may specify the number of minutes that you wish the session
+# to be allowed to remain idle before it expires.
+session-lifetime: 30 #minutes
+
+path:
+  public: public
+  theme: templates/*/*.html
+
+mail:
+  driver: smtp
+  host: smtp.gmail.com
+  port: 587
+  username:
+  password:
+  from:
+  encryption: 2 # [none = 0, ssl = 1, tls = 2, ssltls = 3, starttls = 4]
+
+google-key:
+  client-id:
+  client-secret:

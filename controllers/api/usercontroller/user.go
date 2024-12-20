@@ -6,16 +6,13 @@ import (
 
 	"github.com/faizalom/go-web/lib"
 	"github.com/faizalom/go-web/models"
-
-	"github.com/julienschmidt/httprouter"
 )
 
-func Profile(w http.ResponseWriter, r *http.Request, _ httprouter.Params, auth models.User) {
+func Profile(w http.ResponseWriter, r *http.Request, auth models.User) {
 	lib.Success(w, auth)
 }
 
-func Update(w http.ResponseWriter, r *http.Request, _ httprouter.Params, auth models.User) {
-
+func Update(w http.ResponseWriter, r *http.Request, auth models.User) {
 	err := json.NewDecoder(r.Body).Decode(&auth)
 	if err != nil {
 		lib.Error(w, http.StatusBadRequest, "Invalid request. Please input valid input")

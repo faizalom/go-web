@@ -62,7 +62,7 @@ func VerifyAccessToken(token string) (int64, int64, error) {
 	var id int64
 	var userID int64
 	expiredAt := time.Now().Format("2006-01-02 15:04:05")
-	err := Conn().QueryRow("SELECT id, user_id FROM `access_token` WHERE `token` = ? AND `expired_at` >= ?", token, expiredAt).Scan(&id, &userID)
+	err := Conn().QueryRow("SELECT id, user_id FROM access_token WHERE token = ? AND expired_at >= ?", token, expiredAt).Scan(&id, &userID)
 	if err == sql.ErrNoRows {
 		return 0, 0, nil
 	} else if err != nil {
@@ -75,7 +75,7 @@ func VerifyAccessToken(token string) (int64, int64, error) {
 func UpdateAccessToken(id int64) error {
 	db := Conn()
 
-	query := "UPDATE `access_token` set expired_at = ? WHERE id = ?"
+	query := "UPDATE access_token set expired_at = ? WHERE id = ?"
 	ctx, cancelfunc := context.WithTimeout(context.Background(), 50*time.Second)
 	defer cancelfunc()
 

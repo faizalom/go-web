@@ -4,14 +4,11 @@ import (
 	"database/sql"
 	"net/http"
 
-	"github.com/faizalom/go-web/config"
 	"github.com/faizalom/go-web/lib"
 	"github.com/faizalom/go-web/models"
-
-	"github.com/julienschmidt/httprouter"
 )
 
-func Login(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
+func Login(w http.ResponseWriter, r *http.Request) {
 	email, password, ok := r.BasicAuth()
 	if !ok {
 		lib.Error(w, http.StatusBadRequest, "Invalid Credentials")
@@ -45,7 +42,8 @@ func Login(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
 	lib.Success(w, message)
 }
 
-func GoogleLogin(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
+/*
+func GoogleLogin(w http.ResponseWriter, r *http.Request) {
 	state := r.URL.Query().Get("state")
 	code := r.URL.Query().Get("code")
 	user, err := lib.GoogleGetUserInfo(code)
@@ -102,4 +100,6 @@ func GoogleLogin(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
 		redirectTo,
 	}
 	lib.Success(w, message)
+
 }
+*/

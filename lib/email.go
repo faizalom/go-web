@@ -12,11 +12,11 @@ import (
 
 func Mail(email *mail.Email) {
 	server := mail.NewSMTPClient()
-	server.Host = config.MailStruct.Host
-	server.Port = config.MailStruct.Port
-	server.Username = config.MailStruct.Username
-	server.Password = config.MailStruct.Password
-	server.Encryption = config.MailStruct.Encryption
+	server.Host = config.EMail.Host
+	server.Port = config.EMail.Port
+	server.Username = config.EMail.Username
+	server.Password = config.EMail.Password
+	server.Encryption = config.EMail.Encryption
 	smtpClient, err := server.Connect()
 	if err != nil {
 		log.Println(err)
@@ -30,12 +30,12 @@ func Mail(email *mail.Email) {
 
 func SendRegisterMail(data map[string]any, to ...string) *mail.Email {
 	email := mail.NewMSG()
-	email.SetFrom(config.MailStruct.From)
+	email.SetFrom(config.EMail.From)
 	email.AddTo(to...)
 	email.SetSubject("Please complete you registration process")
 
 	var tpl bytes.Buffer
-	t := template.Must(template.New("registration.html").ParseFiles(config.ThemePath + "/email/registration.html"))
+	t := template.Must(template.New("email_registration.html").ParseGlob(config.Path.Theme))
 	err := t.Execute(&tpl, data)
 	if err != nil {
 		log.Println(err)

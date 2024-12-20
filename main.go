@@ -11,30 +11,30 @@ package main
 import (
 	"log"
 	"net/http"
+	"os"
 
 	"github.com/faizalom/go-web/config"
 	"github.com/faizalom/go-web/lib"
 	"github.com/faizalom/go-web/middleware"
 	"github.com/faizalom/go-web/routers"
-
-	"github.com/joho/godotenv"
 )
 
 func init() {
-	// load .env file
-	err := godotenv.Load(".env")
+	yamlFile, err := os.ReadFile("application.yaml")
 	if err != nil {
-		log.Fatalln("Error loading .env file: ", err)
+		log.Fatalln("Error loading application.yaml file: ", err)
 	}
+	config.SetApplication(yamlFile)
+	lib.TemplateParseGlob(config.Path.Theme)
 }
 
 func main() {
-	lib.LogErrors(config.ErrorLogFile)
+	lib.LogErrors(config.LogFile.ErrorLog)
 
 	// Start a web server
 	// Set your listening port here
 	// Port :80 for http://
-	log.Fatal(http.ListenAndServe(config.Port, middleware.RequestLogger(routers.SetRoutes())))
+	log.Fatal(http.ListenAndServe(config.Server.Port, middleware.RequestLogger(routers.SetRoutes())))
 
 	// To use ssl(https://) use this
 	// Need certfile and keyfile to run this

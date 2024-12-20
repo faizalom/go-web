@@ -27,11 +27,11 @@ func Success(w http.ResponseWriter, data any) {
 
 func Error(w http.ResponseWriter, statusCode int, message string) {
 	errMessage := struct {
-		Status  string `json:"status"`
 		Message string `json:"message"`
+		Status  string `json:"status"`
 	}{
-		"error",
 		message,
+		"error",
 	}
 
 	payload, err := json.Marshal(errMessage)

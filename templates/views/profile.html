@@ -1,6 +1,4 @@
-{{template "main" .}}
-
-{{define "content"}}
+{{template "htmlopen" .}}
 <main class="w-100 m-auto">
     <form class="container" id="update-user">
         <div class="card">
@@ -30,9 +28,11 @@
         </div>
     </form>
 </main>
-{{end}}
+{{template "jsscript"}}
+{{template "profile_script"}}
+{{template "htmlclose"}}
 
-{{define "script"}}
+{{define "profile_script"}}
 <script>
     if (localStorage.getItem('session_token') == null) {
         window.location.replace("/login");
@@ -86,7 +86,7 @@
                 localStorage.clear()
                 window.location.replace("/login");
             }
-            $('#div-error').text(jqXHR.responseJSON.message).removeClass('d-none');
+            $('#div-error').text(jqXHR?.responseJSON?.message).removeClass('d-none');
         }).always(function () {
             $('input,button').prop('disabled', false);
         });
