@@ -9,13 +9,11 @@ import (
 	"github.com/faizalom/go-web/config"
 	"github.com/faizalom/go-web/lib"
 	"github.com/faizalom/go-web/models"
-
-	"github.com/julienschmidt/httprouter"
 )
 
 type H map[string]any
 
-func Register(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
+func Register(w http.ResponseWriter, r *http.Request) {
 
 	request := struct {
 		Email      string `json:"email"`
@@ -76,14 +74,14 @@ func Register(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
 			return
 		}
 		// To avoid hacker to insert multi records in DB. User needs to confirm his email
-		data := map[string]any{"registration_link": config.ServerURL + "/register/" + token}
+		data := map[string]any{"registration_link": config.Server.URL + "/register/" + token}
 		lib.Mail(lib.SendRegisterMail(data, request.Email))
 	}()
 	lib.Success(w, H{"message": "Confirmation link send to " + request.Email + ". Please complete registration by clicking the link"})
 }
 
-func CompleteRegister(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
-	jwtToken := ps.ByName("jwtToken")
+func CompleteRegister(w http.ResponseWriter, r *http.Request) {
+	jwtToken := r.PathValue("jwtToken")
 
 	claims, err := lib.J.VerifyJWT(jwtToken)
 	if err != nil {
