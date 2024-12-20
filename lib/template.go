@@ -3,11 +3,13 @@ package lib
 import (
 	"net/http"
 	"text/template"
-
-	"github.com/faizalom/go-web/config"
 )
 
-var Template = template.Must(template.ParseGlob(config.ThemePath))
+var Template *template.Template
+
+func TemplateParseGlob(ThemePath string) {
+	Template = template.Must(template.ParseGlob(ThemePath))
+}
 
 // function to run html template
 func ExeTemplate(w http.ResponseWriter, templateFile string, data any) {
