@@ -3,7 +3,6 @@ package lib
 import (
 	"context"
 	"encoding/json"
-	"fmt"
 	"log"
 	"time"
 
@@ -25,8 +24,6 @@ func GetGoogleLoginURL() (string, string) {
 		},
 		Endpoint: google.Endpoint,
 	}
-
-	fmt.Println(googleOAuthConfig.RedirectURL)
 
 	state := RandToken()
 	return googleOAuthConfig.AuthCodeURL(state), state
