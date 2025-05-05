@@ -4,7 +4,7 @@ server:
 
 db:
   driver: mysql
-  url: username:password@tcp(127.0.0.1:3306)/db_name
+  url: username:password@tcp(127.0.0.1:3306)/sample_web_app
 
 # possible log levels are debug, info, warn, error, panic
 logfile:
@@ -36,5 +36,6 @@ mail:
   encryption: 2 # [none = 0, ssl = 1, tls = 2, ssltls = 3, starttls = 4]
 
 google-key:
-  client-id:
-  client-secret:
+  client-id: #GCD_CLIENT_ID
+  client-secret: #GCP_CLIENT_SECRET
+  callback-url: /google-user/login

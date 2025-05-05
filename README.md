@@ -24,7 +24,7 @@ To run this web application, you need to have Golang, MySQL and Docker installed
 Follow these steps to install the web application:
 
 1. Clone this repository to your local machine
-2. Create a MySQL database named `sample_web_app` and a user named `sample_user` with password `sample_password`
+2. Create a MySQL database named `sample_web_app`
 3. Run the `schema.sql` file in the `db` folder to create the tables for the web application
 4. Copy the `application.yaml.example` file to `application.yaml` and fill in the values for the environment variables
 5. Set the Google OAuth redirect URL to `http://localhost:8080/google-user/login` in your Google Cloud Console
