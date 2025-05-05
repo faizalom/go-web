@@ -43,13 +43,11 @@ To see your profile information or sign out.
 
 This web application uses the following packages:
 
-- [HTTP Router](https://github.com/julienschmidt/httprouter) - HttpRouter is a lightweight high performance HTTP request router
-- [MySQL Driver](https://github.com/go-sql-driver/mysql) - A MySQL driver for Golang
-- [Godotenv](https://github.com/joho/godotenv) - A package to load environment variables from `.env` files
-
-
-- [Google API Go Client](https://github.com/googleapis/google-api-go-client) - A Go client library for Google APIs
-- [OAuth2](https://github.com/golang/oauth2) - A package to provide OAuth2 support for Golang
+- [github.com/golang-jwt/jwt](https://github.com/golang-jwt/jwt) - A package for creating and verifying JSON Web Tokens (JWT)
+- [github.com/gorilla/csrf](https://github.com/gorilla/csrf) - A middleware for CSRF protection
+- [github.com/gorilla/sessions](https://github.com/gorilla/sessions) - A package for managing user sessions
+- [github.com/xhit/go-simple-mail/v2](https://github.com/xhit/go-simple-mail) - A package for sending emails
+- [gopkg.in/yaml.v2](https://gopkg.in/yaml.v2) - A package for parsing and generating YAML
 
 ## License
 
