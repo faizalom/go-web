@@ -1,0 +1,10 @@
+{{template "htmlopen" .}}
+<main class="w-100 m-auto text-center">
+    {{if eq .Data.type "success"}}
+    <img class="mb-4" src="/public/images/success.png" alt="Success" width="200" />
+    {{else}}
+    <img class="mb-4" src="/public/images/warning.png" alt="Error" width="200" />
+    {{end}}
+    <h1 class="display-5">{{ .Data.message }}</h1>
+</main>
+{{template "htmlclose"}}

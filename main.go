@@ -9,9 +9,11 @@
 package main
 
 import (
+	"fmt"
 	"log"
 	"net/http"
 	"os"
+	"path/filepath"
 
 	"github.com/faizalom/go-web/config"
 	"github.com/faizalom/go-web/lib"
@@ -24,12 +26,29 @@ func init() {
 	if err != nil {
 		log.Fatalln("Error loading application.yaml file: ", err)
 	}
+
+	// Create the log directory if it doesn't exist
+	err = os.MkdirAll(filepath.Dir(config.LogFile.ErrorLog), os.ModePerm)
+	if err != nil {
+		log.Fatalln("Error creating log directory: ", err)
+	}
+
+	// Create the log directory if it doesn't exist
+	err = os.MkdirAll(filepath.Dir(config.LogFile.ErrorLog), os.ModePerm)
+	if err != nil {
+		log.Fatalln("Error creating log directory: ", err)
+	}
+
 	config.SetApplication(yamlFile)
 	lib.TemplateParseGlob(config.Path.Theme)
+	lib.InitSession()
+	lib.InitHash()
 }
 
 func main() {
 	lib.LogErrors(config.LogFile.ErrorLog)
+
+	fmt.Printf("Server is started on port %s\n", config.Server.Port)
 
 	// Start a web server
 	// Set your listening port here

@@ -3,17 +3,13 @@ package models
 import (
 	"context"
 	"database/sql"
+	"fmt"
 	"log"
 	"time"
 
+	"github.com/gorilla/sessions"
 	"golang.org/x/crypto/bcrypt"
-	"golang.org/x/exp/constraints"
 )
-
-// Creating a generic type
-type Number interface {
-	constraints.Integer | constraints.Float
-}
 
 type User struct {
 	ID        int64  `json:"id"`
@@ -76,29 +72,38 @@ func IsEmailExists(email string) (bool, error) {
 	return true, err
 }
 
-func Login(email string, password string) (int64, error) {
-	var id int64
-	var passwordHash string
-	err := Conn().QueryRow("SELECT id, password FROM users WHERE google_Id IS NULL AND email = ?", email).Scan(&id, &passwordHash)
+func GetUserByEmail(email string) (User, error) {
+	var user User
+	err := Conn().QueryRow("SELECT id, first_name, last_name, email, password FROM users WHERE google_id IS NULL AND email = ?", email).Scan(&user.ID, &user.FirstName, &user.LastName, &user.Email, &user.Password)
 	if err == sql.ErrNoRows {
-		return 0, err
+		return user, err
 	} else if err != nil {
 		log.Println(err)
-		return 0, err
+		return user, err
 	}
-
-	err = bcrypt.CompareHashAndPassword([]byte(passwordHash), []byte(password))
-	if err == bcrypt.ErrMismatchedHashAndPassword {
-		return 0, nil
-	} else if err != nil {
-		log.Println(err)
-		return 0, err
-	}
-	return id, err
+	return user, err
 }
 
-// Generic function
-func GetUserById[T Number](id T) (User, error) {
+func Login(email string, password string) (User, string) {
+	user, err := GetUserByEmail(email)
+	if err == sql.ErrNoRows {
+		return user, "Username or password is incorrect"
+	} else if err != nil {
+		return user, "Internal Server Error"
+	}
+
+	err = bcrypt.CompareHashAndPassword([]byte(user.Password), []byte(password))
+	if err == bcrypt.ErrMismatchedHashAndPassword {
+		return user, "Username or password is incorrect"
+	} else if err != nil {
+		log.Println(err)
+		return user, "Internal Server Error"
+	}
+	return user, ""
+}
+
+func GetAuthUser(auth *sessions.Session) (User, error) {
+	id := fmt.Sprintf("%d", auth.Values["user_id"])
 	var user User
 	err := Conn().QueryRow("SELECT id, first_name, last_name, email FROM users WHERE id = ?", id).Scan(&user.ID, &user.FirstName, &user.LastName, &user.Email)
 	if err == sql.ErrNoRows {
@@ -112,7 +117,7 @@ func GetUserById[T Number](id T) (User, error) {
 
 func GetUserByGoogleId(id string) (User, error) {
 	var user User
-	err := Conn().QueryRow("SELECT id, first_name, last_name, email FROM `users` WHERE `id` = ?", id).Scan(&user.ID, &user.FirstName, &user.LastName, &user.Email)
+	err := Conn().QueryRow("SELECT id, first_name, last_name, email FROM users WHERE google_id = ?", id).Scan(&user.ID, &user.FirstName, &user.LastName, &user.Email)
 	if err == sql.ErrNoRows {
 		return user, nil
 	} else if err != nil {

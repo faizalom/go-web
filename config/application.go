@@ -40,6 +40,7 @@ type MailConfig struct {
 type googleKey struct {
 	ClientID     string `yaml:"client-id"`
 	ClientSecret string `yaml:"client-secret"`
+	CallbackURL  string `yaml:"callback-url"`
 }
 
 type applicationConfig struct {
@@ -49,7 +50,7 @@ type applicationConfig struct {
 	Path            *path       `yaml:"path"`
 	EMail           *MailConfig `yaml:"mail"`
 	CipherKey       *string     `yaml:"cipherkey"`
-	SessionLifetime *int64      `yaml:"session-lifetime"`
+	SessionLifetime *int        `yaml:"session-lifetime"`
 	GoogleKey       *googleKey  `yaml:"google-key"`
 }
 
@@ -60,7 +61,7 @@ var AppConfig applicationConfig
 var Path path
 var EMail MailConfig
 var Cipher string
-var SessionLifetime int64
+var SessionLifetime int
 var GoogleKey googleKey
 
 func SetApplication(yamlFile []byte) {

@@ -1,9 +1,6 @@
 server:
-  # host: 0.0.0.0 # to override use SERVER_HOST='127.0.0.1' environment variable
-  port: :8082 # to override use SERVER_PORT=3000 environment variable
-  url: http://localhost:8082
-  # env: prod # to override use SERVER_ENV='dev' environment variable
-  # name: bes-asset-query # to override use SERVER_NAME='bes-asset-query' environment variable
+  port: :8080 # to override use SERVER_PORT=3000 environment variable
+  url: http://localhost:8080
 
 db:
   driver: mysql
@@ -17,7 +14,7 @@ logfile:
 # Encryption Key
 # ==============
 # key must be 16, 24 or 32 bytes long (AES-128, AES-192 or AES-256)
-cipherkey: AES-256-CBC
+cipherkey: 6fPIptW0chqDn25MLRoL/FZ4EjSrzN75kA== # Please change this key to a random string of 16, 24 or 32 bytes long
 
 # Session Lifetime
 # ================

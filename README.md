@@ -26,9 +26,10 @@ Follow these steps to install the web application:
 1. Clone this repository to your local machine
 2. Create a MySQL database named `sample_web_app` and a user named `sample_user` with password `sample_password`
 3. Run the `schema.sql` file in the `db` folder to create the tables for the web application
-4. Copy the `.env.example` file to `.env` and fill in the values for the environment variables
-5. Build the Docker image for the web application using the command `docker build -t sample-web-app .`
-6. Run the Docker container for the web application using the command `docker run -p 8080:8080 sample-web-app`
+4. Copy the `application.yaml.example` file to `application.yaml` and fill in the values for the environment variables
+5. Set the Google OAuth redirect URL to `http://localhost:8080/google-user/login` in your Google Cloud Console
+6. Build the Docker image for the web application using the command `docker build -t sample-web-app .`
+7. Run the Docker container for the web application using the command `docker run -p 8080:8080 sample-web-app`
 
 ## Usage
 
@@ -36,9 +37,7 @@ To use the web application, open your browser and go to `http://localhost:8080`.
 
 To sign up or sign in, click on the `Sign in with Google` button and follow the instructions. You will be redirected to the dashboard page where you can see your tasks.
 
-To create a new task, click on the `Create Task` button and fill in the details. To view, edit or delete a task, click on the corresponding buttons in the task list. To filter your tasks by status, use the dropdown menu on the top right corner. To mark a task as completed or uncompleted, click on the checkbox next to the task title.
-
-To see your profile information or sign out, click on your name on the top right corner and select the appropriate option from the menu.
+To see your profile information or sign out.
 
 ## Dependencies
 

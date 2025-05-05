@@ -9,6 +9,8 @@ import (
 	"github.com/faizalom/go-web/lib"
 )
 
+// REMOVE
+
 func TestSuccess(t *testing.T) {
 	rr := httptest.NewRecorder()
 	data := map[string]string{"message": "success"}

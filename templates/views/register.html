@@ -1,6 +1,7 @@
 {{template "htmlopen" .}}
 <main class="w-100 m-auto">
     <form class="container" method="post" id="register-user">
+        {{ .CsrfField }}
         <div class="card">
             <div class="card-header">
                 <h5 class="card-title">Register New User</h5>
@@ -18,16 +19,18 @@
                 <div class="mb-3">
                     <label for="re-password" class="form-label">Confirm-Password</label>
                     <input type="password" class="form-control" id="repassword" autocomplete="new-password"
-                        name="re_password">
+                        name="repassword">
                 </div>
-                <div class="alert alert-danger d-none" role="alert" id="div-error"></div>
+                {{ range $key, $value := .Flash.error }}
+                <div class="alert alert-danger" role="alert">{{ $value }}</div>
+                {{ end }}
                 <div class="alert alert-success d-none" role="alert" id="div-success"></div>
             </div>
-            <div class="card-footer">
-                <a class="btn btn-outline-primary mt-2" href="{{ .google_register_url }}" role="button"
+            <div class="card-footer d-flex justify-content-between">
+                <a class="btn btn-outline-primary" href="{{ .Data.google_register_url }}" role="button"
                     style="text-transform:none">
                     <img width="20px" style="margin-bottom:3px; margin-right:5px" alt="Google sign-in"
-                        src="https://upload.wikimedia.org/wikipedia/commons/thumb/5/53/Google_%22G%22_Logo.svg/512px-Google_%22G%22_Logo.svg.png" />
+                        src="https://upload.wikimedia.org/wikipedia/commons/c/c1/Google_%22G%22_logo.svg" />
                     Register using Google
                 </a>
                 <button type="submit" class="btn btn-primary float-end">Register</button>
@@ -36,46 +39,4 @@
     </form>
 </main>
 {{template "jsscript"}}
-{{template "registerscript"}}
 {{template "htmlclose"}}
-
-{{define "registerscript"}}
-<script>
-    if (localStorage.getItem('session_token') != null) {
-        window.location.replace("/");
-    }
-
-    $("#register-user").submit(function (e) {
-        e.preventDefault();
-
-        var email = $("#email").val();
-        var password = $("#password").val();
-        var repassword = $("#repassword").val();
-
-        $('input,button').prop('disabled', true);
-        $('#div-error').text("").addClass('d-none');
-        $('#div-success').text("").addClass('d-none');
-
-        $.ajax({
-            url: "/api/register",
-            method: "POST",
-            dataType: 'json',
-            contentType: 'application/json',
-            data: JSON.stringify({
-                email,
-                password,
-                repassword
-            }),
-        }).done(function (res) {
-            $('#div-success').text(res.message).removeClass('d-none');
-            $("#email").val('');
-            $("#password").val('');
-            $("#repassword").val('');
-        }).fail(function (jqXHR, exception) {
-            $('#div-error').text(jqXHR?.responseJSON?.message).removeClass('d-none');
-        }).always(function () {
-            $('input,button').prop('disabled', false);
-        });
-    });
-</script>
-{{end}}

@@ -7,5 +7,7 @@ import (
 )
 
 func Dashboard(w http.ResponseWriter, r *http.Request) {
-	lib.ExeTemplate(w, "dashboard.html", H{"title": "Welcome"})
+	app := lib.GetApp(w, r)
+	app.Title = "Welcome to Dashboard"
+	app.ExeTemp(w, r, "dashboard.html", nil)
 }

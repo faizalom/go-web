@@ -4,18 +4,26 @@ import (
 	"fmt"
 	"time"
 
+	"github.com/faizalom/go-web/config"
 	"github.com/golang-jwt/jwt"
 	"golang.org/x/crypto/bcrypt"
 )
 
-func HashPassword(password string) (string, error) {
-	bytes, err := bcrypt.GenerateFromPassword([]byte(password), bcrypt.DefaultCost)
-	return string(bytes), err
-}
-
 type JwtStruct struct {
 	SecretKey       string
 	SessionLifetime time.Duration
+}
+
+var J JwtStruct
+
+func InitHash() {
+	J.SecretKey = config.Cipher
+	J.SessionLifetime = time.Duration(5)
+}
+
+func HashPassword(password string) (string, error) {
+	bytes, err := bcrypt.GenerateFromPassword([]byte(password), bcrypt.DefaultCost)
+	return string(bytes), err
 }
 
 // Generate JWT token

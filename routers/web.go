@@ -5,26 +5,13 @@ import (
 
 	"github.com/faizalom/go-web/config"
 	"github.com/faizalom/go-web/controllers/frontend"
+	"github.com/faizalom/go-web/middleware"
 	"github.com/gorilla/csrf"
 )
 
-// func noDirListing(h http.Handler) http.HandlerFunc {
-// 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-// 		// if strings.HasSuffix(r.URL.Path, "/") {
-// 		// 	fileNotFoundHandler(w, r)
-// 		// 	return
-// 		// }
-// 		h.ServeHTTP(w, r)
-// 	})
-// }
-
 func defaultRoutes(mux *http.ServeMux) {
-	mux.Handle("GET /", http.FileServer(http.Dir(config.Path.Public)))
-
 	mux.HandleFunc("/", fileNotFoundHandler)
-	mux.HandleFunc("POST /", func(w http.ResponseWriter, r *http.Request) {
-		w.Write([]byte("----- METHOD NOT ALLOWED -----"))
-	})
+	mux.Handle("GET /public/", http.StripPrefix("/public", http.FileServer(http.Dir(config.Path.Public))))
 }
 
 func WebRouters() http.Handler {
@@ -32,14 +19,28 @@ func WebRouters() http.Handler {
 	defaultRoutes(web)
 
 	web.HandleFunc("GET /login", frontend.Login)
-	// router.GET("/google-user/login", frontend.GoogleLogin)
+	web.HandleFunc("POST /login", frontend.LoginSubmit)
+	// Google redirect URL
+	// Add this url in you google console OAuth Authorised redirect URIs
+	web.HandleFunc("GET /google-user/login", frontend.GoogleLogin)
+	web.HandleFunc("GET /logout", frontend.Logout)
 
 	web.HandleFunc("GET /register", frontend.Register)
+	web.HandleFunc("POST /register", frontend.RegisterSubmit)
 	web.HandleFunc("GET /register/{jwtToken}", frontend.CompleteRegister)
 
-	web.HandleFunc("GET /{$}", frontend.Dashboard)
-	web.HandleFunc("GET /profile", frontend.Profile)
+	// This route only accessible when user login or user with valid auth session
+	web.HandleFunc("GET /{$}", middleware.AuthMiddleware(frontend.Dashboard))
 
+	// This route protects all routes with CSRF
 	CSRF := csrf.Protect([]byte(config.Cipher), csrf.ErrorHandler(http.HandlerFunc(pageExpiredHandler)))
 	return CSRF(web)
+}
+
+func NoCSRFRouters() http.Handler {
+	web := http.NewServeMux()
+	defaultRoutes(web)
+
+	web.HandleFunc("POST /loginsubmit", frontend.LoginSubmit)
+	return web
 }

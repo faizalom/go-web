@@ -4,17 +4,9 @@ import (
 	"encoding/json"
 	"log"
 	"net/http"
-	"time"
-
-	"github.com/faizalom/go-web/config"
 )
 
-var J JwtStruct
-
-func init() {
-	J.SecretKey = config.Cipher
-	J.SessionLifetime = time.Duration(5)
-}
+// REMOVE
 
 func Success(w http.ResponseWriter, data any) {
 	payload, err := json.Marshal(data)
