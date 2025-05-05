@@ -4,6 +4,8 @@ import (
 	"fmt"
 	"time"
 
+	"maps"
+
 	"github.com/faizalom/go-web/config"
 	"github.com/golang-jwt/jwt"
 	"golang.org/x/crypto/bcrypt"
@@ -32,9 +34,7 @@ func (j JwtStruct) GenerateJWT(cli map[string]any) (string, error) {
 	token := jwt.New(jwt.SigningMethodHS256)
 	claims := token.Claims.(jwt.MapClaims)
 	//claims["authorized"] = true
-	for k, v := range cli {
-		claims[k] = v
-	}
+	maps.Copy(claims, cli)
 	claims["exp"] = time.Now().Add(time.Minute * j.SessionLifetime).Unix()
 
 	tokenString, err := token.SignedString(mySigningKey)
